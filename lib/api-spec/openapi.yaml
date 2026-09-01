@@ -1,0 +1,687 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: vigilancia
+    description: Dashboard de vigilancia IAAS
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /vigilancia/dashboard:
+    get:
+      operationId: getVigilanciaDashboard
+      tags: [vigilancia]
+      summary: Get clinical surveillance dashboard
+      description: Returns the operational summary, alert queue, bed map, and trend series for the clinical areas floor.
+      parameters:
+        - name: days
+          in: query
+          required: false
+          schema:
+            type: number
+            enum: [7, 14, 30, 90]
+            default: 30
+      responses:
+        "200":
+          description: Dashboard data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VigilanciaDashboard"
+  /vigilancia/alerts:
+    get:
+      operationId: getVigilanciaAlerts
+      tags: [vigilancia]
+      summary: List current clinical alerts
+      responses:
+        "200":
+          description: Current alerts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/VigilanciaAlert"
+  /vigilancia/outbreak-prediction:
+    post:
+      operationId: predictVigilanciaOutbreak
+      tags: [vigilancia]
+      summary: Analyze outbreak signals from saved surveillance records
+      description: Runs an on-demand, privacy-minimized Gemini analysis over current operational bed records. The result is an orienting signal, not a diagnosis or outbreak confirmation.
+      responses:
+        "200":
+          description: Outbreak signal analysis
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VigilanciaOutbreakPrediction"
+        "502":
+          description: Analysis provider unavailable or returned an invalid response
+  /vigilancia/transcription:
+    post:
+      operationId: transcribeVigilanciaCensus
+      tags: [vigilancia]
+      summary: Transcribe a temporary census image or PDF
+      description: Reads a permitted census image or PDF through the direct AI provider. The file is not persisted and the result must be reviewed before applying it.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VigilanciaTranscriptionRequest"
+      responses:
+        "200":
+          description: Assisted transcription ready for human review
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VigilanciaTranscriptionResponse"
+        "400":
+          description: Invalid image or PDF payload
+        "502":
+          description: Transcription provider unavailable or returned an invalid response
+  /vigilancia/records:
+    get:
+      operationId: getVigilanciaBedRecords
+      tags: [vigilancia]
+      summary: List saved bed records
+      responses:
+        "200":
+          description: Saved operational records
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/VigilanciaBedRecord"
+  /vigilancia/records/batch:
+    post:
+      operationId: applyVigilanciaCensus
+      tags: [vigilancia]
+      summary: Apply reviewed census rows atomically
+      description: Validates every selected bed before applying all record updates and releases in one database transaction.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VigilanciaCensusApplyInput"
+      responses:
+        "200":
+          description: All reviewed rows were applied
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VigilanciaCensusApplyResponse"
+        "400":
+          description: Invalid census row
+        "500":
+          description: Census could not be applied
+  /vigilancia/records/{bedId}:
+    put:
+      operationId: upsertVigilanciaBedRecord
+      tags: [vigilancia]
+      summary: Save an operational bed record
+      parameters:
+        - name: bedId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: "^(20[1-9]|21[0-1]|2[12][0-3])-[abc]$"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VigilanciaBedRecordInput"
+      responses:
+        "200":
+          description: Saved operational record
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VigilanciaBedRecord"
+        "400":
+          description: Invalid bed record
+    delete:
+      operationId: deleteVigilanciaBedRecord
+      tags: [vigilancia]
+      summary: Release a bed and remove its saved record
+      parameters:
+        - name: bedId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: "^(20[1-9]|21[0-1]|2[12][0-3])-[abc]$"
+      responses:
+        "204":
+          description: Record deleted
+        "400":
+          description: Invalid bed identifier
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+    VigilanciaMetric:
+      type: object
+      properties:
+        key:
+          type: string
+        label:
+          type: string
+        value:
+          type: number
+        displayValue:
+          type: string
+        tone:
+          type: string
+          enum: [blue, green, amber, red]
+        helper:
+          type: string
+      required: [key, label, value, displayValue, tone, helper]
+    VigilanciaAlert:
+      type: object
+      properties:
+        id:
+          type: string
+        level:
+          type: string
+          enum: [critical, warning, info]
+        title:
+          type: string
+        patientCode:
+          type: string
+        location:
+          type: string
+        detail:
+          type: string
+        createdAt:
+          type: string
+        status:
+          type: string
+          enum: [active, acknowledged]
+      required: [id, level, title, patientCode, location, detail, createdAt, status]
+    VigilanciaBed:
+      type: object
+      properties:
+        id:
+          type: string
+        room:
+          type: string
+        bed:
+          type: string
+        patientCode:
+          type: string
+        status:
+          type: string
+          enum: [stable, warning, critical, isolation]
+        days:
+          type: number
+        urinaryCatheterDays:
+          type: number
+          minimum: 0
+        nasogastricTubeDays:
+          type: number
+          minimum: 0
+        centralLineDays:
+          type: number
+          minimum: 0
+        cultureType:
+          type: string
+          enum: [none, urine, blood, respiratory, other]
+        cultureStatus:
+          type: string
+          enum: [pending, negative, positive]
+        cultureOrganism:
+          type: string
+        alertCount:
+          type: number
+        isolation:
+          type: string
+          enum: [none, respiratory, contact, droplets]
+        rectalSwabStatus:
+          type: string
+          enum: [pending, negative, positive]
+        rectalSwabOrganism:
+          type: string
+      required: [id, room, bed, patientCode, status, days, alertCount, isolation]
+    VigilanciaTrendPoint:
+      type: object
+      properties:
+        date:
+          type: string
+        label:
+          type: string
+        activeAlerts:
+          type: number
+        positiveCultures:
+          type: number
+        handHygiene:
+          type: number
+      required: [date, label, activeAlerts, positiveCultures, handHygiene]
+    VigilanciaDashboard:
+      type: object
+      properties:
+        generatedAt:
+          type: string
+        rangeDays:
+          type: number
+        metrics:
+          type: array
+          items:
+            $ref: "#/components/schemas/VigilanciaMetric"
+        alerts:
+          type: array
+          items:
+            $ref: "#/components/schemas/VigilanciaAlert"
+        beds:
+          type: array
+          items:
+            $ref: "#/components/schemas/VigilanciaBed"
+        trends:
+          type: array
+          items:
+            $ref: "#/components/schemas/VigilanciaTrendPoint"
+        alertBreakdown:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              value:
+                type: number
+              color:
+                type: string
+            required: [name, value, color]
+      required: [generatedAt, rangeDays, metrics, alerts, beds, trends, alertBreakdown]
+    VigilanciaOutbreakPrediction:
+      type: object
+      properties:
+        generatedAt:
+          type: string
+        status:
+          type: string
+          enum: [ready, insufficient_data]
+        signal:
+          type: string
+          enum: [low, moderate, high, insufficient]
+        score:
+          type: number
+          minimum: 0
+          maximum: 100
+        summary:
+          type: string
+          maxLength: 600
+        coverage:
+          type: object
+          properties:
+            savedRecords:
+              type: number
+            occupiedBeds:
+              type: number
+            positiveCultures:
+              type: number
+            positiveSwabs:
+              type: number
+            datedPositiveResults:
+              type: number
+            periodStart:
+              type: ["string", "null"]
+              pattern: '^\d{4}-\d{2}-\d{2}$'
+            periodEnd:
+              type: ["string", "null"]
+              pattern: '^\d{4}-\d{2}-\d{2}$'
+          required: [savedRecords, occupiedBeds, positiveCultures, positiveSwabs, datedPositiveResults, periodStart, periodEnd]
+        areas:
+          type: array
+          maxItems: 30
+          items:
+            type: object
+            properties:
+              room:
+                type: string
+              signal:
+                type: string
+                enum: [low, moderate, high, insufficient]
+              positiveResults:
+                type: number
+              occupiedBeds:
+                type: number
+              detail:
+                type: string
+                maxLength: 300
+            required: [room, signal, positiveResults, occupiedBeds, detail]
+        factors:
+          type: array
+          maxItems: 8
+          items:
+            type: object
+            properties:
+              kind:
+                type: string
+                enum: [elevates, protects, context]
+              title:
+                type: string
+                maxLength: 140
+              detail:
+                type: string
+                maxLength: 300
+            required: [kind, title, detail]
+        missingData:
+          type: array
+          maxItems: 8
+          items:
+            type: string
+            maxLength: 240
+        recommendations:
+          type: array
+          maxItems: 8
+          items:
+            type: string
+            maxLength: 300
+        limitations:
+          type: array
+          maxItems: 5
+          items:
+            type: string
+            maxLength: 300
+        reviewRequired:
+          type: boolean
+          enum: [true]
+      required: [generatedAt, status, signal, score, summary, coverage, areas, factors, missingData, recommendations, limitations, reviewRequired]
+    VigilanciaBedRecord:
+      type: object
+      properties:
+        bedId:
+          type: string
+        occupied:
+          type: boolean
+        patientCode:
+          type: string
+          maxLength: 20
+        diagnosis:
+          type: string
+          maxLength: 160
+        stayDays:
+          type: ["number", "null"]
+          multipleOf: 1
+          minimum: 0
+        urinaryCatheterDays:
+          type: ["number", "null"]
+          multipleOf: 1
+          minimum: 0
+        nasogastricTubeDays:
+          type: ["number", "null"]
+          multipleOf: 1
+          minimum: 0
+        centralLineDays:
+          type: ["number", "null"]
+          multipleOf: 1
+          minimum: 0
+        cultureType:
+          type: string
+          enum: [none, urine, blood, respiratory, other]
+        cultureStatus:
+          type: string
+          enum: [pending, negative, positive]
+        cultureOrganism:
+          type: string
+          maxLength: 120
+        culturePositiveDate:
+          type: ["string", "null"]
+          pattern: '^\d{4}-\d{2}-\d{2}$'
+        rectalSwabStatus:
+          type: string
+          enum: [pending, negative, positive]
+        rectalSwabOrganism:
+          type: string
+          maxLength: 120
+        rectalSwabPositiveDate:
+          type: ["string", "null"]
+          pattern: '^\d{4}-\d{2}-\d{2}$'
+        isolation:
+          type: string
+          enum: [none, respiratory, contact, droplets]
+        updatedAt:
+          type: string
+      required: [bedId, occupied, patientCode, diagnosis, stayDays, urinaryCatheterDays, nasogastricTubeDays, centralLineDays, cultureType, cultureStatus, cultureOrganism, culturePositiveDate, rectalSwabStatus, rectalSwabOrganism, rectalSwabPositiveDate, isolation, updatedAt]
+    VigilanciaBedRecordInput:
+      type: object
+      properties:
+        occupied:
+          type: boolean
+        patientCode:
+          type: string
+          maxLength: 20
+        diagnosis:
+          type: string
+          maxLength: 160
+        stayDays:
+          type: ["number", "null"]
+          multipleOf: 1
+          minimum: 0
+        urinaryCatheterDays:
+          type: ["number", "null"]
+          multipleOf: 1
+          minimum: 0
+        nasogastricTubeDays:
+          type: ["number", "null"]
+          multipleOf: 1
+          minimum: 0
+        centralLineDays:
+          type: ["number", "null"]
+          multipleOf: 1
+          minimum: 0
+        cultureType:
+          type: string
+          enum: [none, urine, blood, respiratory, other]
+        cultureStatus:
+          type: string
+          enum: [pending, negative, positive]
+        cultureOrganism:
+          type: string
+          maxLength: 120
+        culturePositiveDate:
+          type: ["string", "null"]
+          pattern: '^\d{4}-\d{2}-\d{2}$'
+        rectalSwabStatus:
+          type: string
+          enum: [pending, negative, positive]
+        rectalSwabOrganism:
+          type: string
+          maxLength: 120
+        rectalSwabPositiveDate:
+          type: ["string", "null"]
+          pattern: '^\d{4}-\d{2}-\d{2}$'
+        isolation:
+          type: string
+          enum: [none, respiratory, contact, droplets]
+      required: [occupied, patientCode, diagnosis, stayDays, urinaryCatheterDays, nasogastricTubeDays, centralLineDays, cultureType, cultureStatus, cultureOrganism, rectalSwabStatus, rectalSwabOrganism, isolation]
+    VigilanciaCensusRowInput:
+      type: object
+      properties:
+        bedId:
+          type: string
+          pattern: "^(20[1-9]|21[0-1]|2[12][0-3])-[abc]$"
+        occupied:
+          type: boolean
+        patientCode:
+          type: string
+          maxLength: 20
+        diagnosis:
+          type: string
+          maxLength: 160
+        stayDays:
+          type: ["number", "null"]
+          multipleOf: 1
+          minimum: 0
+        urinaryCatheterDays:
+          type: ["number", "null"]
+          multipleOf: 1
+          minimum: 0
+        nasogastricTubeDays:
+          type: ["number", "null"]
+          multipleOf: 1
+          minimum: 0
+        centralLineDays:
+          type: ["number", "null"]
+          multipleOf: 1
+          minimum: 0
+        cultureType:
+          type: string
+          enum: [none, urine, blood, respiratory, other]
+        cultureStatus:
+          type: string
+          enum: [pending, negative, positive]
+        cultureOrganism:
+          type: string
+          maxLength: 120
+        culturePositiveDate:
+          type: ["string", "null"]
+          pattern: '^\d{4}-\d{2}-\d{2}$'
+        rectalSwabStatus:
+          type: string
+          enum: [pending, negative, positive]
+        rectalSwabOrganism:
+          type: string
+          maxLength: 120
+        rectalSwabPositiveDate:
+          type: ["string", "null"]
+          pattern: '^\d{4}-\d{2}-\d{2}$'
+        isolation:
+          type: string
+          enum: [none, respiratory, contact, droplets]
+      required: [bedId, occupied, patientCode, diagnosis, stayDays, urinaryCatheterDays, nasogastricTubeDays, centralLineDays, cultureType, cultureStatus, cultureOrganism, culturePositiveDate, rectalSwabStatus, rectalSwabOrganism, rectalSwabPositiveDate, isolation]
+    VigilanciaCensusApplyInput:
+      type: object
+      properties:
+        rows:
+          type: array
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/VigilanciaCensusRowInput"
+      required: [rows]
+    VigilanciaCensusApplyResponse:
+      type: object
+      properties:
+        appliedCount:
+          type: number
+          multipleOf: 1
+          minimum: 1
+      required: [appliedCount]
+    VigilanciaTranscriptionRequest:
+      type: object
+      properties:
+        imageBase64:
+          type: string
+          maxLength: 28000000
+        mimeType:
+          type: string
+          enum: [image/jpeg, image/png, image/webp, application/pdf]
+      required: [imageBase64, mimeType]
+    VigilanciaTranscriptionRow:
+      type: object
+      properties:
+        bedId:
+          type: ["string", "null"]
+        occupied:
+          type: ["boolean", "null"]
+        patientCode:
+          type: ["string", "null"]
+          maxLength: 20
+        diagnosis:
+          type: ["string", "null"]
+          maxLength: 160
+        stayDays:
+          type: ["number", "null"]
+          multipleOf: 1
+          minimum: 0
+        urinaryCatheterDays:
+          type: ["number", "null"]
+          multipleOf: 1
+          minimum: 0
+        nasogastricTubeDays:
+          type: ["number", "null"]
+          multipleOf: 1
+          minimum: 0
+        centralLineDays:
+          type: ["number", "null"]
+          multipleOf: 1
+          minimum: 0
+        cultureType:
+          type: ["string", "null"]
+          enum: [none, urine, blood, respiratory, other]
+        cultureStatus:
+          type: ["string", "null"]
+          enum: [pending, negative, positive]
+        cultureOrganism:
+          type: ["string", "null"]
+          maxLength: 120
+        culturePositiveDate:
+          type: ["string", "null"]
+          pattern: '^\d{4}-\d{2}-\d{2}$'
+        isolation:
+          type: ["string", "null"]
+          enum: [none, respiratory, contact, droplets]
+        rectalSwabStatus:
+          type: ["string", "null"]
+          enum: [pending, negative, positive]
+        rectalSwabOrganism:
+          type: ["string", "null"]
+          maxLength: 120
+        rectalSwabPositiveDate:
+          type: ["string", "null"]
+          pattern: '^\d{4}-\d{2}-\d{2}$'
+        confidence:
+          type: string
+          enum: [high, medium, low]
+        warnings:
+          type: array
+          items:
+            type: string
+            maxLength: 240
+      required: [bedId, occupied, patientCode, diagnosis, stayDays, urinaryCatheterDays, nasogastricTubeDays, culturePositiveDate, centralLineDays, cultureType, cultureStatus, cultureOrganism, isolation, rectalSwabStatus, rectalSwabOrganism, rectalSwabPositiveDate, confidence, warnings]
+    VigilanciaTranscriptionResponse:
+      type: object
+      properties:
+        rows:
+          type: array
+          maxItems: 53
+          items:
+            $ref: "#/components/schemas/VigilanciaTranscriptionRow"
+        warnings:
+          type: array
+          items:
+            type: string
+            maxLength: 240
+        reviewedRequired:
+          type: boolean
+          enum: [true]
+      required: [rows, warnings, reviewedRequired]
