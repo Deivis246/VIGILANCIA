@@ -26,7 +26,7 @@ COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
 COPY . .
 
 # Instalar las dependencias usando pnpm
-RUN pnpm install --frozen-lockfile
+RUN pnpm config set ignore-scripts false && pnpm install --frozen-lockfile
 
 # Compilar solo el servidor API y sus librerías
 RUN pnpm run typecheck:libs || true
