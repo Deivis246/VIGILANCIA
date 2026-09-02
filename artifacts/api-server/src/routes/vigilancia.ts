@@ -191,9 +191,9 @@ function parseLocalOcrRow(segment: string, bedId: string): LocalOcrRow {
     patientCode,
     diagnosis,
     stayDays: parseOcrDays(normalizedSegment, ["ESTANCIA", "D[IÍ]AS DE ESTANCIA"]),
-    urinaryCatheterDays: parseOcrDays(normalizedSegment, ["SONDA VESICAL", "SONDA URINARIA"]),
-    nasogastricTubeDays: parseOcrDays(normalizedSegment, ["SONDA NASOG[ÁA]STRICA", "SONDA NASOGASTRICA"]),
-    centralLineDays: parseOcrDays(normalizedSegment, ["V[IÍ]A CENTRAL", "LINEA CENTRAL", "L[IÍ]NEA CENTRAL"]),
+    urinaryCatheterDays: parseOcrDays(normalizedSegment, ["SONDA VESICAL", "SONDA URINARIA", "S\\.?\\s*VESICAL"]),
+    nasogastricTubeDays: parseOcrDays(normalizedSegment, ["SONDA NASOG[ÁA]STRICA", "SONDA NASOGASTRICA", "S\\.?\\s*NG", "SNG", "S\\. N\\. G\\."]),
+    centralLineDays: parseOcrDays(normalizedSegment, ["V[IÍ]A CENTRAL", "LINEA CENTRAL", "L[IÍ]NEA CENTRAL", "V\\.?\\s*CENTRAL"]),
     cultureType,
     cultureStatus,
     cultureOrganism,
@@ -241,7 +241,7 @@ function canonicalOcrHeader(text: string) {
   if (/DIAGN(?:O)?STICO/.test(normalized)) return "Diagnóstico";
   if (/ESTANCIA/.test(normalized)) return "Estancia";
   if (/VESICAL|URINARIA/.test(normalized)) return "Sonda vesical";
-  if (/NASOGASTRICA|^NG$/.test(normalized)) return "Sonda nasogástrica";
+  if (/NASOGASTRICA|\bNG\b|S\.?\s*N\.?\s*G\.?/.test(normalized)) return "Sonda nasogástrica";
   if (/CENTRAL/.test(normalized)) return "Vía central";
   if (/AISLAMIENTO/.test(normalized)) return "Aislamiento";
   if (/HISOPADO|SWAB/.test(normalized)) return "Hisopado";
