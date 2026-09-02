@@ -35,5 +35,5 @@ RUN pnpm --filter @workspace/api-server run build
 # Exponer el puerto
 EXPOSE 8080
 
-# Iniciar la aplicación
-CMD ["node", "--enable-source-maps", "./artifacts/api-server/dist/index.mjs"]
+# Iniciar la aplicación: Primero sincroniza la BD y luego arranca el servidor
+CMD ["sh", "-c", "pnpm --filter @workspace/db run push && node --enable-source-maps ./artifacts/api-server/dist/index.mjs"]
