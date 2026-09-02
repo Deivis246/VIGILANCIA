@@ -298,7 +298,7 @@ export function CensusTranscription() {
       </div>
 
       {appliedCount > 0 && <div data-testid="transcription-success" className="mb-5 flex items-center gap-3 rounded-xl border border-primary/35 bg-primary/10 p-4 text-sm text-foreground"><Check className="text-primary" size={18} /> Se aplicaron {appliedCount} filas y se actualizaron el mapa, las métricas y las alertas.</div>}
-      {error && <div data-testid="transcription-error" className="mb-5 flex items-start gap-3 rounded-xl border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive-foreground"><AlertTriangle className="mt-0.5 shrink-0" size={18} />{error}</div>}
+      {error && <div data-testid="transcription-error" className="mb-5 flex items-start gap-3 rounded-xl border border-destructive/40 bg-destructive/10 p-4 text-sm text-foreground"><AlertTriangle className="text-destructive mt-0.5 shrink-0" size={18} />{error}</div>}
 
       {!rows.length && <section className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px]">
         <label className="group flex min-h-[300px] cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-border bg-card p-8 text-center hover:border-primary/60 hover:bg-card/80">
