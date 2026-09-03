@@ -1052,7 +1052,7 @@ router.post("/vigilancia/transcription", async (req, res): Promise<void> => {
     }
   }
 
-  if (process.env.GEMINI_API_KEY) {
+  if (process.env.GOOGLE_GEMINI_API_KEY) {
     try {
       const output = await extractGeminiOcr(fileBuffer, mimeType);
       res.json(TranscribeVigilanciaCensusResponse.parse(output));
