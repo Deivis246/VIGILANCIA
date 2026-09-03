@@ -138,6 +138,7 @@ export function CensusTranscription() {
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState("");
   const [rows, setRows] = useState<EditableRow[]>([]);
+  const [dynamicTables, setDynamicTables] = useState<{ title: string; columns: string[]; rows: string[][] }[] | undefined>([]);
   const [globalWarnings, setGlobalWarnings] = useState<string[]>([]);
   const [error, setError] = useState("");
   const [confirming, setConfirming] = useState(false);
@@ -171,6 +172,7 @@ export function CensusTranscription() {
     setFile(null);
     setPreviewUrl("");
     setRows([]);
+    setDynamicTables([]);
     setGlobalWarnings([]);
     setError("");
     setConfirming(false);
@@ -213,6 +215,7 @@ export function CensusTranscription() {
         },
       });
       setRows(result.rows.map(makeEditableRow));
+      setDynamicTables(result.dynamicTables);
       setGlobalWarnings(result.warnings);
       if (!result.rows.length) setError("No se identificaron filas legibles. Prueba con una imagen o PDF más nítido.");
     } catch (requestError) {
@@ -296,6 +299,39 @@ export function CensusTranscription() {
       <div className="mb-5 rounded-xl border border-amber-500/35 bg-amber-500/10 p-4 text-xs leading-relaxed text-amber-100">
         <strong>Privacidad:</strong> si el documento contiene nombres, cédulas, teléfonos, historias clínicas u otros identificadores personales, el lector los omite y continúa con la transcripción. Esos datos no se muestran ni se guardan. La transcripción es asistida y no sustituye la revisión clínica o epidemiológica.
       </div>
+
+      {dynamicTables && dynamicTables.length > 0 && (
+        <div className="mb-8 space-y-6">
+          <h2 className="text-xl font-semibold text-foreground">Tablas Extraídas del Documento</h2>
+          {dynamicTables.map((table, i) => (
+            <div key={i} className="overflow-hidden rounded-xl border border-border bg-card">
+              <div className="bg-muted/50 px-4 py-3 border-b border-border">
+                <h3 className="font-medium text-sm text-foreground">{table.title}</h3>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead>
+                    <tr className="border-b border-border bg-muted/20">
+                      {table.columns.map((col, j) => (
+                        <th key={j} className="whitespace-nowrap px-4 py-3 font-medium text-muted-foreground">{col}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border">
+                    {table.rows.map((row, j) => (
+                      <tr key={j} className="hover:bg-muted/10 transition-colors">
+                        {row.map((cell, k) => (
+                          <td key={k} className="whitespace-nowrap px-4 py-3 text-foreground">{cell}</td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {appliedCount > 0 && <div data-testid="transcription-success" className="mb-5 flex items-center gap-3 rounded-xl border border-primary/35 bg-primary/10 p-4 text-sm text-foreground"><Check className="text-primary" size={18} /> Se aplicaron {appliedCount} filas y se actualizaron el mapa, las métricas y las alertas.</div>}
       {error && <div data-testid="transcription-error" className="mb-5 flex items-start gap-3 rounded-xl border border-destructive/40 bg-destructive/10 p-4 text-sm text-foreground"><AlertTriangle className="text-destructive mt-0.5 shrink-0" size={18} />{error}</div>}

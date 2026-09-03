@@ -650,7 +650,7 @@ async function extractGeminiOcr(fileBuffer: Buffer<ArrayBufferLike>, mimeType: s
             },
           },
           {
-            text: "Extract the data from this clinical census table into a structured list of rows. If a bed is marked as available, empty, or DISPONIBLE, occupied should be false. Otherwise true. Pay attention to abbreviations like 'S. VESICAL' (urinary catheter) or 'V. CENTRAL' (central line). Maintain exact bed IDs (e.g. 201-A). If you cannot read a value confidently, leave it null, but extract as much as possible. Set reviewedRequired to true.",
+            text: "Extrae los datos de este documento clínico de dos maneras diferentes:\n1. EXTRAE TODAS LAS TABLAS EXACTAMENTE COMO APARECEN (dynamicTables): Identifica cualquier tabla visible (ej. 'Resumen del Día', 'Censo Clínico', cuadros de aislamiento). Para cada tabla, extrae su título, la lista exacta de nombres de columnas y el contenido fila por fila. No modifiques ni omitas columnas originales.\n2. EXTRAE LOS DATOS CLÍNICOS ESENCIALES (rows): Independientemente del formato de la tabla, mapea cada paciente a nuestra estructura clínica estandarizada. Identifica si la cama está disponible/libre u ocupada. Traduce columnas como 'SNG' a nasogastricTubeDays (número de días, si está marcado o tiene fecha asume 0 si no dice días), 'CVC' o 'Vía Central' a centralLineDays, 'S. Vesical' o 'CUP' a urinaryCatheterDays. Asegúrate de conservar el bedId exacto (ej. 201-A). \nAmbas extracciones deben ser devueltas en el JSON final. Pon reviewedRequired en true.",
           },
         ],
       },

@@ -37,6 +37,7 @@ export * from './vigilanciaCensusRowInputIsolation';
 export * from './vigilanciaCensusRowInputRectalSwabStatus';
 export * from './vigilanciaDashboard';
 export * from './vigilanciaDashboardAlertBreakdownItem';
+export * from './vigilanciaDynamicTable';
 export * from './vigilanciaMetric';
 export * from './vigilanciaMetricTone';
 export * from './vigilanciaOutbreakPrediction';

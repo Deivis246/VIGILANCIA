@@ -5,6 +5,7 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { VigilanciaDynamicTable } from './vigilanciaDynamicTable';
 import type { VigilanciaTranscriptionRow } from './vigilanciaTranscriptionRow';
 
 export interface VigilanciaTranscriptionResponse {
@@ -13,4 +14,5 @@ export interface VigilanciaTranscriptionResponse {
   /** @items.maxLength 240 */
   warnings: string[];
   reviewedRequired: true;
+  dynamicTables?: VigilanciaDynamicTable[];
 }

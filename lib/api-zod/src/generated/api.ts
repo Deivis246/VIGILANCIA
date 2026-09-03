@@ -239,7 +239,12 @@ export const TranscribeVigilanciaCensusResponse = zod.object({
   "warnings": zod.array(zod.string().max(transcribeVigilanciaCensusResponseRowsItemWarningsItemMax))
 })).max(transcribeVigilanciaCensusResponseRowsMax),
   "warnings": zod.array(zod.string().max(transcribeVigilanciaCensusResponseWarningsItemMax)),
-  "reviewedRequired": zod.literal(true)
+  "reviewedRequired": zod.literal(true),
+  "dynamicTables": zod.array(zod.object({
+  "title": zod.string(),
+  "columns": zod.array(zod.string()),
+  "rows": zod.array(zod.array(zod.string()))
+})).optional()
 })
 
 

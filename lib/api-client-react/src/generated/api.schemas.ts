@@ -670,12 +670,19 @@ export interface VigilanciaTranscriptionRow {
   warnings: string[];
 }
 
+export interface VigilanciaDynamicTable {
+  title: string;
+  columns: string[];
+  rows: string[][];
+}
+
 export interface VigilanciaTranscriptionResponse {
   /** @maxItems 53 */
   rows: VigilanciaTranscriptionRow[];
   /** @items.maxLength 240 */
   warnings: string[];
   reviewedRequired: true;
+  dynamicTables?: VigilanciaDynamicTable[];
 }
 
 export type GetVigilanciaDashboardParams = {
