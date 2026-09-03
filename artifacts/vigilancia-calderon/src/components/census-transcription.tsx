@@ -139,6 +139,7 @@ export function CensusTranscription() {
   const [previewUrl, setPreviewUrl] = useState("");
   const [rows, setRows] = useState<EditableRow[]>([]);
   const [dynamicTables, setDynamicTables] = useState<{ title: string; columns: string[]; rows: string[][] }[] | undefined>([]);
+  const [selectedTableIndex, setSelectedTableIndex] = useState(0);
   const [globalWarnings, setGlobalWarnings] = useState<string[]>([]);
   const [error, setError] = useState("");
   const [confirming, setConfirming] = useState(false);
@@ -173,6 +174,7 @@ export function CensusTranscription() {
     setPreviewUrl("");
     setRows([]);
     setDynamicTables([]);
+    setSelectedTableIndex(0);
     setGlobalWarnings([]);
     setError("");
     setConfirming(false);
@@ -216,6 +218,7 @@ export function CensusTranscription() {
       });
       setRows(result.rows.map(makeEditableRow));
       setDynamicTables(result.dynamicTables);
+      setSelectedTableIndex(0);
       setGlobalWarnings(result.warnings);
       if (!result.rows.length) setError("No se identificaron filas legibles. Prueba con una imagen o PDF más nítido.");
     } catch (requestError) {
@@ -302,23 +305,43 @@ export function CensusTranscription() {
 
       {dynamicTables && dynamicTables.length > 0 && (
         <div className="mb-8 space-y-6">
-          <h2 className="text-xl font-semibold text-foreground">Tablas Extraídas del Documento</h2>
-          {dynamicTables.map((table, i) => (
-            <div key={i} className="overflow-hidden rounded-xl border border-border bg-card">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-semibold text-foreground">Tablas Extraídas del Documento</h2>
+          </div>
+          
+          <div className="flex flex-wrap gap-2 mb-4">
+            {dynamicTables.map((table, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => setSelectedTableIndex(i)}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  selectedTableIndex === i 
+                    ? "bg-primary text-primary-foreground" 
+                    : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
+                }`}
+              >
+                {table.title || `Tabla ${i + 1}`}
+              </button>
+            ))}
+          </div>
+
+          {dynamicTables[selectedTableIndex] && (
+            <div className="overflow-hidden rounded-xl border border-border bg-card">
               <div className="bg-muted/50 px-4 py-3 border-b border-border">
-                <h3 className="font-medium text-sm text-foreground">{table.title}</h3>
+                <h3 className="font-medium text-sm text-foreground">{dynamicTables[selectedTableIndex].title}</h3>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
                   <thead>
                     <tr className="border-b border-border bg-muted/20">
-                      {table.columns.map((col, j) => (
+                      {dynamicTables[selectedTableIndex].columns.map((col, j) => (
                         <th key={j} className="whitespace-nowrap px-4 py-3 font-medium text-muted-foreground">{col}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border">
-                    {table.rows.map((row, j) => (
+                    {dynamicTables[selectedTableIndex].rows.map((row, j) => (
                       <tr key={j} className="hover:bg-muted/10 transition-colors">
                         {row.map((cell, k) => (
                           <td key={k} className="whitespace-nowrap px-4 py-3 text-foreground">{cell}</td>
@@ -329,7 +352,7 @@ export function CensusTranscription() {
                 </table>
               </div>
             </div>
-          ))}
+          )}
         </div>
       )}
 
@@ -367,7 +390,7 @@ export function CensusTranscription() {
            <table className="w-full min-w-[2140px] border-collapse text-left">
             <thead className="bg-muted/60 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
                  <tr>
-                   <th className="p-3">Aplicar</th><th className="p-3">Cama</th><th className="p-3">Estado</th><th className="p-3">Código</th><th className="p-3">Diagnóstico breve</th><th className="p-3">Estancia</th><th className="p-3">S. vesical</th><th className="p-3">S. NG</th><th className="p-3">Vía central</th><th className="p-3">Cultivo</th><th className="p-3">Resultado</th><th className="p-3">Fecha cultivo positivo</th><th className="p-3">Bacteria</th><th className="p-3">Aislamiento</th><th className="p-3">Hisopado</th><th className="p-3">Bacteria hisopado</th><th className="p-3">Fecha hisopado positivo</th><th className="p-3">Confianza</th>
+                   <th className="p-3">Aplicar</th><th className="p-3">Cama</th><th className="p-3">Estado</th><th className="p-3">Código</th><th className="p-3">Diagnóstico breve</th><th className="p-3">S. vesical</th><th className="p-3">S. NG</th><th className="p-3">Vía central</th><th className="p-3">Cultivo</th><th className="p-3">Resultado</th><th className="p-3">Fecha cultivo positivo</th><th className="p-3">Bacteria</th><th className="p-3">Aislamiento</th><th className="p-3">Hisopado</th><th className="p-3">Bacteria hisopado</th><th className="p-3">Fecha hisopado positivo</th><th className="p-3">Confianza</th>
               </tr>
             </thead>
             <tbody>
@@ -379,7 +402,7 @@ export function CensusTranscription() {
                   <td className="p-3"><select data-testid={`select-transcription-occupancy-${index}`} value={row.occupied} onChange={(event) => updateRow(index, "occupied", event.target.value as EditableRow["occupied"])} className={`${fieldClass} w-28`}><option value="unknown">Revisar</option><option value="occupied">Ocupada</option><option value="available">Disponible</option></select></td>
                    <td className="p-3"><input data-testid={`input-transcription-code-${index}`} value={row.patientCode} maxLength={20} disabled={row.occupied === "available"} onChange={(event) => updateRow(index, "patientCode", event.target.value)} className={`${fieldClass} w-28 uppercase`} /></td>
                    <td className="p-3"><input data-testid={`input-transcription-diagnosis-${index}`} value={row.diagnosis} maxLength={160} disabled={row.occupied === "available"} onChange={(event) => updateRow(index, "diagnosis", event.target.value)} className={`${fieldClass} w-40`} /></td>
-                  {(["stayDays", "urinaryCatheterDays", "nasogastricTubeDays", "centralLineDays"] as const).map((key) => <td key={key} className="p-3"><input data-testid={`input-transcription-${key}-${index}`} type="text" inputMode="numeric" pattern="[0-9]*" value={row[key]} disabled={row.occupied === "available"} onChange={(event) => updateRow(index, key, event.target.value.replace(/[^0-9]/g, ''))} className={`${fieldClass} w-20 font-mono`} /></td>)}
+                  {(["urinaryCatheterDays", "nasogastricTubeDays", "centralLineDays"] as const).map((key) => <td key={key} className="p-3"><input data-testid={`input-transcription-${key}-${index}`} type="text" inputMode="numeric" pattern="[0-9]*" value={row[key]} disabled={row.occupied === "available"} onChange={(event) => updateRow(index, key, event.target.value.replace(/[^0-9]/g, ''))} className={`${fieldClass} w-20 font-mono`} /></td>)}
                    <td className="p-3"><select data-testid={`select-transcription-culture-type-${index}`} value={row.cultureType} disabled={row.occupied === "available"} onChange={(event) => updateRow(index, "cultureType", event.target.value as EditableRow["cultureType"])} className={`${fieldClass} w-28`}><option value="unknown">Revisar</option><option value="none">Sin cultivo</option><option value="urine">Orina</option><option value="blood">Sangre</option><option value="respiratory">Respiratorio</option><option value="other">Otro</option></select></td>
                    <td className="p-3"><select data-testid={`select-transcription-culture-status-${index}`} value={row.cultureStatus} disabled={row.occupied === "available" || row.cultureType === "none"} onChange={(event) => updateRow(index, "cultureStatus", event.target.value as EditableRow["cultureStatus"])} className={`${fieldClass} w-24`}><option value="unknown">Revisar</option><option value="pending">Pendiente</option><option value="negative">Negativo</option><option value="positive">Positivo</option></select></td>
                    <td className="p-3"><input data-testid={`input-transcription-culture-positive-date-${index}`} type="date" value={row.culturePositiveDate} max="9999-12-31" disabled={row.occupied === "available" || row.cultureType === "none" || row.cultureStatus !== "positive"} onChange={(event) => updateRow(index, "culturePositiveDate", event.target.value)} className={`${fieldClass} w-36`} /></td>
