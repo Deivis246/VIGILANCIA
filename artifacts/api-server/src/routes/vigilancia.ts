@@ -637,6 +637,37 @@ async function generateDirectGeminiContent(request: Omit<GeminiGenerateRequest, 
   throw lastError;
 }
 
+async function extractGeminiOcr(fileBuffer: Buffer<ArrayBufferLike>, mimeType: string) {
+  const response = await generateDirectGeminiContent({
+    contents: [
+      {
+        role: "user",
+        parts: [
+          {
+            inlineData: {
+              data: fileBuffer.toString("base64"),
+              mimeType,
+            },
+          },
+          {
+            text: "Extract the data from this clinical census table into a structured list of rows. If a bed is marked as available, empty, or DISPONIBLE, occupied should be false. Otherwise true. Pay attention to abbreviations like 'S. VESICAL' (urinary catheter) or 'V. CENTRAL' (central line). Maintain exact bed IDs (e.g. 201-A). If you cannot read a value confidently, leave it null, but extract as much as possible. Set reviewedRequired to true.",
+          },
+        ],
+      },
+    ],
+    config: {
+      responseMimeType: "application/json",
+      responseSchema: transcriptionResponseSchema,
+      systemInstruction: "You are an expert clinical data extractor. Your goal is to accurately transcribe a hospital census document into structured JSON. Pay extreme attention to the row alignments and column boundaries, especially when interpreting densely packed numbers. Do not fabricate data.",
+    },
+  });
+  
+  const rawText = safeJsonText(response.text);
+  if (!rawText) throw new Error("Empty Gemini OCR response");
+  
+  return JSON.parse(rawText);
+}
+
 function serializeBedRecord(record: typeof vigilanciaBedRecordsTable.$inferSelect) {
   return {
     ...record,
@@ -1018,6 +1049,16 @@ router.post("/vigilancia/transcription", async (req, res): Promise<void> => {
     } catch {
       res.status(400).json({ error: "El archivo no es una imagen válida o excede los límites de procesamiento." });
       return;
+    }
+  }
+
+  if (process.env.GEMINI_API_KEY) {
+    try {
+      const output = await extractGeminiOcr(fileBuffer, mimeType);
+      res.json(TranscribeVigilanciaCensusResponse.parse(output));
+      return;
+    } catch (error) {
+      req.log.warn({ err: error }, "Gemini OCR failed, falling back to local OCR");
     }
   }
 
