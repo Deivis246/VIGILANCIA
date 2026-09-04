@@ -643,7 +643,7 @@ async function generateDirectGeminiContent(request: Omit<GeminiGenerateRequest, 
           ...request.config,
           httpOptions: {
             ...request.config?.httpOptions,
-            timeout: 30_000,
+            timeout: 90_000,
           },
         },
       });
@@ -1088,6 +1088,10 @@ router.post("/vigilancia/transcription", async (req, res): Promise<void> => {
       return;
     } catch (error) {
       req.log.warn({ err: error }, "Gemini OCR failed, falling back to local OCR");
+      if (mimeType === "application/pdf") {
+        res.status(502).json({ error: "No se pudo extraer el texto del PDF con la IA y el servidor no tiene memoria suficiente para procesarlo localmente. Inténtalo de nuevo." });
+        return;
+      }
     }
   }
 
