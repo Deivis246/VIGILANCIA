@@ -695,6 +695,18 @@ async function extractGeminiOcr(fileBuffer: Buffer<ArrayBufferLike>, mimeType: s
   }
   if (Array.isArray(parsed.rows)) {
     for (const row of parsed.rows) {
+      if (typeof row.patientCode === "string") {
+        row.patientCode = row.patientCode.substring(0, 20);
+      }
+      if (typeof row.diagnosis === "string") {
+        row.diagnosis = row.diagnosis.substring(0, 160);
+      }
+      if (typeof row.cultureOrganism === "string") {
+        row.cultureOrganism = row.cultureOrganism.substring(0, 120);
+      }
+      if (typeof row.rectalSwabOrganism === "string") {
+        row.rectalSwabOrganism = row.rectalSwabOrganism.substring(0, 120);
+      }
       if (typeof row.culturePositiveDate === "string" && !/^\d{4}-\d{2}-\d{2}$/.test(row.culturePositiveDate)) {
         row.culturePositiveDate = null;
       }
