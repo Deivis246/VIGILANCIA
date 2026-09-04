@@ -523,8 +523,11 @@ const transcriptionResponseSchema = {
           rows: {
             type: "ARRAY",
             items: {
-              type: "ARRAY",
-              items: { type: "STRING" },
+              type: "OBJECT",
+              properties: {
+                cells: { type: "ARRAY", items: { type: "STRING" } },
+              },
+              required: ["cells"],
             },
           },
         },
@@ -683,7 +686,15 @@ async function extractGeminiOcr(fileBuffer: Buffer<ArrayBufferLike>, mimeType: s
   const rawText = safeJsonText(response.text);
   if (!rawText) throw new Error("Empty Gemini OCR response");
   
-  return JSON.parse(rawText);
+  const parsed = JSON.parse(rawText);
+  if (Array.isArray(parsed.dynamicTables)) {
+    parsed.dynamicTables = parsed.dynamicTables.map((t: any) => ({
+      ...t,
+      rows: Array.isArray(t.rows) ? t.rows.map((r: any) => (Array.isArray(r) ? r : (r.cells || []))) : []
+    }));
+  }
+  
+  return parsed;
 }
 
 function serializeBedRecord(record: typeof vigilanciaBedRecordsTable.$inferSelect) {
