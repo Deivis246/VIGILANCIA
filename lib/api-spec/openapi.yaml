@@ -426,6 +426,13 @@ components:
         patientCode:
           type: string
           maxLength: 20
+        age:
+          type: ["number", "null"]
+          multipleOf: 1
+          minimum: 0
+        affiliation:
+          type: ["string", "null"]
+          maxLength: 120
         diagnosis:
           type: string
           maxLength: 160
@@ -471,7 +478,7 @@ components:
           enum: [none, respiratory, contact, droplets]
         updatedAt:
           type: string
-      required: [bedId, occupied, patientCode, diagnosis, stayDays, urinaryCatheterDays, nasogastricTubeDays, centralLineDays, cultureType, cultureStatus, cultureOrganism, culturePositiveDate, rectalSwabStatus, rectalSwabOrganism, rectalSwabPositiveDate, isolation, updatedAt]
+      required: [bedId, occupied, patientCode, age, affiliation, diagnosis, stayDays, urinaryCatheterDays, nasogastricTubeDays, centralLineDays, cultureType, cultureStatus, cultureOrganism, culturePositiveDate, rectalSwabStatus, rectalSwabOrganism, rectalSwabPositiveDate, isolation, updatedAt]
     VigilanciaBedRecordInput:
       type: object
       properties:
@@ -480,6 +487,13 @@ components:
         patientCode:
           type: string
           maxLength: 20
+        age:
+          type: ["number", "null"]
+          multipleOf: 1
+          minimum: 0
+        affiliation:
+          type: ["string", "null"]
+          maxLength: 120
         diagnosis:
           type: string
           maxLength: 160
@@ -523,7 +537,7 @@ components:
         isolation:
           type: string
           enum: [none, respiratory, contact, droplets]
-      required: [occupied, patientCode, diagnosis, stayDays, urinaryCatheterDays, nasogastricTubeDays, centralLineDays, cultureType, cultureStatus, cultureOrganism, rectalSwabStatus, rectalSwabOrganism, isolation]
+      required: [occupied, patientCode, age, affiliation, diagnosis, stayDays, urinaryCatheterDays, nasogastricTubeDays, centralLineDays, cultureType, cultureStatus, cultureOrganism, rectalSwabStatus, rectalSwabOrganism, isolation]
     VigilanciaCensusRowInput:
       type: object
       properties:
@@ -535,6 +549,13 @@ components:
         patientCode:
           type: string
           maxLength: 20
+        age:
+          type: ["number", "null"]
+          multipleOf: 1
+          minimum: 0
+        affiliation:
+          type: ["string", "null"]
+          maxLength: 120
         diagnosis:
           type: string
           maxLength: 160
@@ -578,7 +599,7 @@ components:
         isolation:
           type: string
           enum: [none, respiratory, contact, droplets]
-      required: [bedId, occupied, patientCode, diagnosis, stayDays, urinaryCatheterDays, nasogastricTubeDays, centralLineDays, cultureType, cultureStatus, cultureOrganism, culturePositiveDate, rectalSwabStatus, rectalSwabOrganism, rectalSwabPositiveDate, isolation]
+      required: [bedId, occupied, patientCode, age, affiliation, diagnosis, stayDays, urinaryCatheterDays, nasogastricTubeDays, centralLineDays, cultureType, cultureStatus, cultureOrganism, culturePositiveDate, rectalSwabStatus, rectalSwabOrganism, rectalSwabPositiveDate, isolation]
     VigilanciaCensusApplyInput:
       type: object
       properties:

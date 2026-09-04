@@ -648,6 +648,9 @@ export declare const TranscribeVigilanciaCensusResponse: zod.ZodObject<{
  * @summary List saved bed records
  */
 export declare const getVigilanciaBedRecordsResponsePatientCodeMax = 20;
+export declare const getVigilanciaBedRecordsResponseAgeMin = 0;
+export declare const getVigilanciaBedRecordsResponseAgeMultipleOf = 1;
+export declare const getVigilanciaBedRecordsResponseAffiliationMax = 120;
 export declare const getVigilanciaBedRecordsResponseDiagnosisMax = 160;
 export declare const getVigilanciaBedRecordsResponseStayDaysMin = 0;
 export declare const getVigilanciaBedRecordsResponseStayDaysMultipleOf = 1;
@@ -665,6 +668,8 @@ export declare const GetVigilanciaBedRecordsResponseItem: zod.ZodObject<{
     bedId: zod.ZodString;
     occupied: zod.ZodBoolean;
     patientCode: zod.ZodString;
+    age: zod.ZodNullable<zod.ZodNumber>;
+    affiliation: zod.ZodNullable<zod.ZodString>;
     diagnosis: zod.ZodString;
     stayDays: zod.ZodNullable<zod.ZodNumber>;
     urinaryCatheterDays: zod.ZodNullable<zod.ZodNumber>;
@@ -696,6 +701,8 @@ export declare const GetVigilanciaBedRecordsResponseItem: zod.ZodObject<{
     stayDays: number | null;
     culturePositiveDate: string | null;
     rectalSwabPositiveDate: string | null;
+    age: number | null;
+    affiliation: string | null;
     updatedAt: string;
 }, {
     patientCode: string;
@@ -714,12 +721,16 @@ export declare const GetVigilanciaBedRecordsResponseItem: zod.ZodObject<{
     stayDays: number | null;
     culturePositiveDate: string | null;
     rectalSwabPositiveDate: string | null;
+    age: number | null;
+    affiliation: string | null;
     updatedAt: string;
 }>;
 export declare const GetVigilanciaBedRecordsResponse: zod.ZodArray<zod.ZodObject<{
     bedId: zod.ZodString;
     occupied: zod.ZodBoolean;
     patientCode: zod.ZodString;
+    age: zod.ZodNullable<zod.ZodNumber>;
+    affiliation: zod.ZodNullable<zod.ZodString>;
     diagnosis: zod.ZodString;
     stayDays: zod.ZodNullable<zod.ZodNumber>;
     urinaryCatheterDays: zod.ZodNullable<zod.ZodNumber>;
@@ -751,6 +762,8 @@ export declare const GetVigilanciaBedRecordsResponse: zod.ZodArray<zod.ZodObject
     stayDays: number | null;
     culturePositiveDate: string | null;
     rectalSwabPositiveDate: string | null;
+    age: number | null;
+    affiliation: string | null;
     updatedAt: string;
 }, {
     patientCode: string;
@@ -769,6 +782,8 @@ export declare const GetVigilanciaBedRecordsResponse: zod.ZodArray<zod.ZodObject
     stayDays: number | null;
     culturePositiveDate: string | null;
     rectalSwabPositiveDate: string | null;
+    age: number | null;
+    affiliation: string | null;
     updatedAt: string;
 }>, "many">;
 /**
@@ -777,6 +792,9 @@ export declare const GetVigilanciaBedRecordsResponse: zod.ZodArray<zod.ZodObject
  */
 export declare const applyVigilanciaCensusBodyRowsItemBedIdRegExp: RegExp;
 export declare const applyVigilanciaCensusBodyRowsItemPatientCodeMax = 20;
+export declare const applyVigilanciaCensusBodyRowsItemAgeMin = 0;
+export declare const applyVigilanciaCensusBodyRowsItemAgeMultipleOf = 1;
+export declare const applyVigilanciaCensusBodyRowsItemAffiliationMax = 120;
 export declare const applyVigilanciaCensusBodyRowsItemDiagnosisMax = 160;
 export declare const applyVigilanciaCensusBodyRowsItemStayDaysMin = 0;
 export declare const applyVigilanciaCensusBodyRowsItemStayDaysMultipleOf = 1;
@@ -795,6 +813,8 @@ export declare const ApplyVigilanciaCensusBody: zod.ZodObject<{
         bedId: zod.ZodString;
         occupied: zod.ZodBoolean;
         patientCode: zod.ZodString;
+        age: zod.ZodNullable<zod.ZodNumber>;
+        affiliation: zod.ZodNullable<zod.ZodString>;
         diagnosis: zod.ZodString;
         stayDays: zod.ZodNullable<zod.ZodNumber>;
         urinaryCatheterDays: zod.ZodNullable<zod.ZodNumber>;
@@ -825,6 +845,8 @@ export declare const ApplyVigilanciaCensusBody: zod.ZodObject<{
         stayDays: number | null;
         culturePositiveDate: string | null;
         rectalSwabPositiveDate: string | null;
+        age: number | null;
+        affiliation: string | null;
     }, {
         patientCode: string;
         isolation: "none" | "respiratory" | "contact" | "droplets";
@@ -842,6 +864,8 @@ export declare const ApplyVigilanciaCensusBody: zod.ZodObject<{
         stayDays: number | null;
         culturePositiveDate: string | null;
         rectalSwabPositiveDate: string | null;
+        age: number | null;
+        affiliation: string | null;
     }>, "many">;
 }, "strip", zod.ZodTypeAny, {
     rows: {
@@ -861,6 +885,8 @@ export declare const ApplyVigilanciaCensusBody: zod.ZodObject<{
         stayDays: number | null;
         culturePositiveDate: string | null;
         rectalSwabPositiveDate: string | null;
+        age: number | null;
+        affiliation: string | null;
     }[];
 }, {
     rows: {
@@ -880,6 +906,8 @@ export declare const ApplyVigilanciaCensusBody: zod.ZodObject<{
         stayDays: number | null;
         culturePositiveDate: string | null;
         rectalSwabPositiveDate: string | null;
+        age: number | null;
+        affiliation: string | null;
     }[];
 }>;
 export declare const applyVigilanciaCensusResponseAppliedCountMultipleOf = 1;
@@ -902,6 +930,9 @@ export declare const UpsertVigilanciaBedRecordParams: zod.ZodObject<{
     bedId: string;
 }>;
 export declare const upsertVigilanciaBedRecordBodyPatientCodeMax = 20;
+export declare const upsertVigilanciaBedRecordBodyAgeMin = 0;
+export declare const upsertVigilanciaBedRecordBodyAgeMultipleOf = 1;
+export declare const upsertVigilanciaBedRecordBodyAffiliationMax = 120;
 export declare const upsertVigilanciaBedRecordBodyDiagnosisMax = 160;
 export declare const upsertVigilanciaBedRecordBodyStayDaysMin = 0;
 export declare const upsertVigilanciaBedRecordBodyStayDaysMultipleOf = 1;
@@ -918,6 +949,8 @@ export declare const upsertVigilanciaBedRecordBodyRectalSwabPositiveDateRegExp: 
 export declare const UpsertVigilanciaBedRecordBody: zod.ZodObject<{
     occupied: zod.ZodBoolean;
     patientCode: zod.ZodString;
+    age: zod.ZodNullable<zod.ZodNumber>;
+    affiliation: zod.ZodNullable<zod.ZodString>;
     diagnosis: zod.ZodString;
     stayDays: zod.ZodNullable<zod.ZodNumber>;
     urinaryCatheterDays: zod.ZodNullable<zod.ZodNumber>;
@@ -945,6 +978,8 @@ export declare const UpsertVigilanciaBedRecordBody: zod.ZodObject<{
     occupied: boolean;
     diagnosis: string;
     stayDays: number | null;
+    age: number | null;
+    affiliation: string | null;
     culturePositiveDate?: string | null | undefined;
     rectalSwabPositiveDate?: string | null | undefined;
 }, {
@@ -961,10 +996,15 @@ export declare const UpsertVigilanciaBedRecordBody: zod.ZodObject<{
     occupied: boolean;
     diagnosis: string;
     stayDays: number | null;
+    age: number | null;
+    affiliation: string | null;
     culturePositiveDate?: string | null | undefined;
     rectalSwabPositiveDate?: string | null | undefined;
 }>;
 export declare const upsertVigilanciaBedRecordResponsePatientCodeMax = 20;
+export declare const upsertVigilanciaBedRecordResponseAgeMin = 0;
+export declare const upsertVigilanciaBedRecordResponseAgeMultipleOf = 1;
+export declare const upsertVigilanciaBedRecordResponseAffiliationMax = 120;
 export declare const upsertVigilanciaBedRecordResponseDiagnosisMax = 160;
 export declare const upsertVigilanciaBedRecordResponseStayDaysMin = 0;
 export declare const upsertVigilanciaBedRecordResponseStayDaysMultipleOf = 1;
@@ -982,6 +1022,8 @@ export declare const UpsertVigilanciaBedRecordResponse: zod.ZodObject<{
     bedId: zod.ZodString;
     occupied: zod.ZodBoolean;
     patientCode: zod.ZodString;
+    age: zod.ZodNullable<zod.ZodNumber>;
+    affiliation: zod.ZodNullable<zod.ZodString>;
     diagnosis: zod.ZodString;
     stayDays: zod.ZodNullable<zod.ZodNumber>;
     urinaryCatheterDays: zod.ZodNullable<zod.ZodNumber>;
@@ -1013,6 +1055,8 @@ export declare const UpsertVigilanciaBedRecordResponse: zod.ZodObject<{
     stayDays: number | null;
     culturePositiveDate: string | null;
     rectalSwabPositiveDate: string | null;
+    age: number | null;
+    affiliation: string | null;
     updatedAt: string;
 }, {
     patientCode: string;
@@ -1031,6 +1075,8 @@ export declare const UpsertVigilanciaBedRecordResponse: zod.ZodObject<{
     stayDays: number | null;
     culturePositiveDate: string | null;
     rectalSwabPositiveDate: string | null;
+    age: number | null;
+    affiliation: string | null;
     updatedAt: string;
 }>;
 /**

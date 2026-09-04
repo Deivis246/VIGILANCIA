@@ -53,6 +53,40 @@ export declare const vigilanciaBedRecordsTable: import("drizzle-orm/pg-core").Pg
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
+        age: import("drizzle-orm/pg-core").PgColumn<{
+            name: "age";
+            tableName: "vigilancia_bed_records";
+            dataType: "number";
+            columnType: "PgInteger";
+            data: number;
+            driverParam: string | number;
+            notNull: false;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+        affiliation: import("drizzle-orm/pg-core").PgColumn<{
+            name: "affiliation";
+            tableName: "vigilancia_bed_records";
+            dataType: "string";
+            columnType: "PgText";
+            data: string;
+            driverParam: string;
+            notNull: false;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: [string, ...string[]];
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
         diagnosis: import("drizzle-orm/pg-core").PgColumn<{
             name: "diagnosis";
             tableName: "vigilancia_bed_records";
@@ -298,6 +332,8 @@ export declare const insertVigilanciaBedRecordSchema: import("zod/v4").ZodObject
     bedId: import("zod/v4").ZodString;
     occupied: import("zod/v4").ZodBoolean;
     patientCode: import("zod/v4").ZodString;
+    age: import("zod/v4").ZodOptional<import("zod/v4").ZodNullable<import("zod/v4").ZodInt>>;
+    affiliation: import("zod/v4").ZodOptional<import("zod/v4").ZodNullable<import("zod/v4").ZodString>>;
     diagnosis: import("zod/v4").ZodOptional<import("zod/v4").ZodString>;
     stayDays: import("zod/v4").ZodOptional<import("zod/v4").ZodNullable<import("zod/v4").ZodInt>>;
     urinaryCatheterDays: import("zod/v4").ZodOptional<import("zod/v4").ZodNullable<import("zod/v4").ZodInt>>;

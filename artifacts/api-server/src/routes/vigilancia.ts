@@ -88,6 +88,8 @@ type LocalOcrRow = {
   bedId: string;
   occupied: boolean | null;
   patientCode: string | null;
+  age: number | null;
+  affiliation: string | null;
   diagnosis: string | null;
   stayDays: number | null;
   urinaryCatheterDays: number | null;
@@ -142,6 +144,11 @@ function parseLocalOcrRow(segment: string, bedId: string): LocalOcrRow {
   const patientCode = rawPatientCode && !/^(?:CAMA|ESTADO|DIAGN|DIAGNOSTICO|ESTANCIA)$/i.test(rawPatientCode)
     ? rawPatientCode
     : null;
+  const age = parseOcrDays(normalizedSegment, ["EDAD"]);
+  const affiliation = limitOcrText(
+    normalizedSegment.match(/(?:AFILIACI[ÓO]N)\s*[:#-]?\s*([^|\n;]{2,120})/i)?.[1],
+    120,
+  );
   const diagnosis = limitOcrText(
     normalizedSegment.match(/DIAGN[ÓO]?STICO\s*[:#-]?\s*([^|\n;]{2,160})/i)?.[1],
     160,
@@ -189,6 +196,8 @@ function parseLocalOcrRow(segment: string, bedId: string): LocalOcrRow {
     bedId,
     occupied,
     patientCode,
+    age,
+    affiliation,
     diagnosis,
     stayDays: parseOcrDays(normalizedSegment, ["ESTANCIA", "D[IÍ]AS DE ESTANCIA"]),
     urinaryCatheterDays: parseOcrDays(normalizedSegment, ["SONDA VESICAL", "SONDA URINARIA", "S\\.?\\s*VESICAL"]),
@@ -212,6 +221,8 @@ function clearClinicalDataForAvailableBeds(row: LocalOcrRow): LocalOcrRow {
   return {
     ...row,
     patientCode: null,
+    age: null,
+    affiliation: null,
     diagnosis: null,
     stayDays: null,
     urinaryCatheterDays: null,
@@ -486,6 +497,8 @@ const transcriptionResponseSchema = {
           bedId: { type: "STRING", nullable: true },
           occupied: { type: "BOOLEAN", nullable: true },
           patientCode: { type: "STRING", nullable: true },
+          age: { type: "INTEGER", nullable: true },
+          affiliation: { type: "STRING", nullable: true },
           diagnosis: { type: "STRING", nullable: true },
           stayDays: { type: "INTEGER", nullable: true },
           urinaryCatheterDays: { type: "INTEGER", nullable: true },
@@ -503,7 +516,7 @@ const transcriptionResponseSchema = {
           warnings: { type: "ARRAY", items: { type: "STRING" } },
         },
         required: [
-          "bedId", "occupied", "patientCode", "diagnosis", "stayDays", "urinaryCatheterDays",
+          "bedId", "occupied", "patientCode", "age", "affiliation", "diagnosis", "stayDays", "urinaryCatheterDays",
           "nasogastricTubeDays", "centralLineDays", "cultureType", "cultureStatus",
           "cultureOrganism", "culturePositiveDate", "isolation", "rectalSwabStatus", "rectalSwabOrganism",
           "rectalSwabPositiveDate",
@@ -671,7 +684,7 @@ async function extractGeminiOcr(fileBuffer: Buffer<ArrayBufferLike>, mimeType: s
             },
           },
           {
-            text: "Extrae los datos de este documento clínico de dos maneras diferentes:\n1. EXTRAE TODAS LAS TABLAS DEL DOCUMENTO Y SEPÁRALAS (dynamicTables): Revisa CADA PÁGINA del PDF minuciosamente. Identifica CADA TABLA por separado (ej. 'Ingresos', 'Egresos', 'Transferencias', 'Defunciones', 'Resumen del día', 'Censos de áreas clínicas', 'Aislamientos', etc). ¡MUY IMPORTANTE!: NO fusiones diferentes tablas en una sola. Si hay 8 tablas diferentes en el PDF, el array 'dynamicTables' debe tener 8 elementos. Para cada tabla, extrae su título real, la lista EXACTA de nombres de columnas (si sobran columnas en el JSON, elimínalas; si faltan, agrégalas) y el contenido de TODAS sus filas. BAJO NINGUNA CIRCUNSTANCIA OMITAS COLUMNAS NI FILAS.\n2. EXTRAE LOS DATOS CLÍNICOS ESENCIALES (rows): Independientemente del formato de la tabla, mapea cada paciente a nuestra estructura clínica estandarizada. Identifica si la cama está disponible/libre u ocupada. Traduce columnas como 'SNG' a nasogastricTubeDays (número de días, si está marcado o tiene fecha asume 0 si no dice días), 'CVC' o 'Vía Central' a centralLineDays, 'S. Vesical' o 'CUP' a urinaryCatheterDays. Asegúrate de conservar el bedId exacto (ej. 201-A). \nAmbas extracciones deben ser devueltas en el JSON final. Pon reviewedRequired en true.\n\nADVERTENCIA CRÍTICA: PROHIBIDO OMITIR INFORMACIÓN. DEBES LEER TODAS LAS PÁGINAS DEL DOCUMENTO HASTA EL FINAL Y EXTRAER TODAS LAS FILAS Y TODAS LAS TABLAS. ESTO ES PARA UN ENTORNO HOSPITALARIO CRÍTICO DONDE OMITIR UN PACIENTE PUEDE COSTAR VIDAS. NO HAGAS RESÚMENES, NO ACORTES LA RESPUESTA, PROCESA EL PDF ENTERO.",
+            text: "Extrae los datos de este documento clínico de dos maneras diferentes:\n1. EXTRAE TODAS LAS TABLAS DEL DOCUMENTO Y SEPÁRALAS (dynamicTables): Revisa CADA PÁGINA del PDF minuciosamente. Identifica CADA TABLA por separado (ej. 'Ingresos', 'Egresos', 'Transferencias', 'Defunciones', 'Resumen del día', 'Censos de áreas clínicas', 'Aislamientos', etc). ¡MUY IMPORTANTE!: NO fusiones diferentes tablas en una sola. Si hay 8 tablas diferentes en el PDF, el array 'dynamicTables' debe tener 8 elementos. Para cada tabla, extrae su título real, la lista EXACTA de nombres de columnas (si sobran columnas en el JSON, elimínalas; si faltan, agrégalas) y el contenido de TODAS sus filas. BAJO NINGUNA CIRCUNSTANCIA OMITAS COLUMNAS NI FILAS.\n2. EXTRAE LOS DATOS CLÍNICOS ESENCIALES (rows): Independientemente del formato de la tabla, mapea cada paciente a nuestra estructura clínica estandarizada. Identifica si la cama está disponible/libre u ocupada. Traduce columnas como 'SNG' a nasogastricTubeDays (número de días, si está marcado o tiene fecha asume 0 si no dice días), 'CVC' o 'Vía Central' a centralLineDays, 'S. Vesical' o 'CUP' a urinaryCatheterDays. IMPORTANTE PARA bedId: Combina la columna HABITACION y CAMA (ej. 201 y A) para formar el ID exacto en minúscula (ej. 201-a). Para age, extrae la EDAD en números enteros. Para affiliation, extrae el texto de AFILIACION.\nAmbas extracciones deben ser devueltas en el JSON final. Pon reviewedRequired en true.\n\nADVERTENCIA CRÍTICA: PROHIBIDO OMITIR INFORMACIÓN. DEBES LEER TODAS LAS PÁGINAS DEL DOCUMENTO HASTA EL FINAL Y EXTRAER TODAS LAS FILAS Y TODAS LAS TABLAS. ESTO ES PARA UN ENTORNO HOSPITALARIO CRÍTICO DONDE OMITIR UN PACIENTE PUEDE COSTAR VIDAS. NO HAGAS RESÚMENES, NO ACORTES LA RESPUESTA, PROCESA EL PDF ENTERO.",
           },
         ],
       },

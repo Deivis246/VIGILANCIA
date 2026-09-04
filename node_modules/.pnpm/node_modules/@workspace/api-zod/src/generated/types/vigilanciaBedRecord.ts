@@ -15,6 +15,16 @@ export interface VigilanciaBedRecord {
   occupied: boolean;
   /** @maxLength 20 */
   patientCode: string;
+  /**
+     * @minimum 0
+     * @nullable
+     */
+  age: number | null;
+  /**
+     * @maxLength 120
+     * @nullable
+     */
+  affiliation: string | null;
   /** @maxLength 160 */
   diagnosis: string;
   /**

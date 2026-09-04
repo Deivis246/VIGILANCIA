@@ -28,6 +28,8 @@ type EditableRow = {
   bedId: string;
   occupied: "unknown" | "occupied" | "available";
   patientCode: string;
+  age: string;
+  affiliation: string;
   diagnosis: string;
   stayDays: string;
   urinaryCatheterDays: string;
@@ -66,6 +68,8 @@ function makeEditableRow(row: VigilanciaTranscriptionRow): EditableRow {
     bedId: row.bedId ?? "",
     occupied: row.occupied == null ? "unknown" : row.occupied ? "occupied" : "available",
     patientCode: row.patientCode ?? "",
+    age: numberValue(row.age),
+    affiliation: row.affiliation ?? "",
     diagnosis: row.diagnosis ?? "",
     stayDays: numberValue(row.stayDays),
     urinaryCatheterDays: numberValue(row.urinaryCatheterDays),
@@ -97,6 +101,8 @@ function toInput(row: EditableRow): VigilanciaBedRecordInput {
   return {
     occupied: true,
     patientCode: row.patientCode.trim().toUpperCase(),
+    age: parseNumber(row.age),
+    affiliation: row.affiliation.trim(),
     diagnosis: row.diagnosis.trim(),
     stayDays: parseNumber(row.stayDays),
     urinaryCatheterDays: parseNumber(row.urinaryCatheterDays),
@@ -390,7 +396,7 @@ export function CensusTranscription() {
            <table className="w-full min-w-[2140px] border-collapse text-left">
             <thead className="bg-muted/60 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
                  <tr>
-                   <th className="p-3">Aplicar</th><th className="p-3">Cama</th><th className="p-3">Estado</th><th className="p-3">Código</th><th className="p-3">Diagnóstico breve</th><th className="p-3">S. vesical</th><th className="p-3">S. NG</th><th className="p-3">Vía central</th><th className="p-3">Cultivo</th><th className="p-3">Resultado</th><th className="p-3">Fecha cultivo positivo</th><th className="p-3">Bacteria</th><th className="p-3">Aislamiento</th><th className="p-3">Hisopado</th><th className="p-3">Bacteria hisopado</th><th className="p-3">Fecha hisopado positivo</th><th className="p-3">Confianza</th>
+                   <th className="p-3">Aplicar</th><th className="p-3">Cama</th><th className="p-3">Estado</th><th className="p-3">Código</th><th className="p-3">Edad</th><th className="p-3">Afiliación</th><th className="p-3">Diagnóstico breve</th><th className="p-3">S. vesical</th><th className="p-3">S. NG</th><th className="p-3">Vía central</th><th className="p-3">Cultivo</th><th className="p-3">Resultado</th><th className="p-3">Fecha cultivo positivo</th><th className="p-3">Bacteria</th><th className="p-3">Aislamiento</th><th className="p-3">Hisopado</th><th className="p-3">Bacteria hisopado</th><th className="p-3">Fecha hisopado positivo</th><th className="p-3">Confianza</th>
               </tr>
             </thead>
             <tbody>
@@ -401,6 +407,8 @@ export function CensusTranscription() {
                   <td className="p-3"><select data-testid={`select-transcription-bed-${index}`} aria-invalid={Boolean(validation)} value={row.bedId} onChange={(event) => updateRow(index, "bedId", event.target.value)} className={`${fieldClass} w-24`}><option value="">Revisar</option>{BED_IDS.map((bedId) => <option key={bedId} value={bedId}>{bedId.toUpperCase()}</option>)}</select>{validation && <p className="mt-2 w-44 text-[10px] leading-relaxed text-destructive">{validation}</p>}{row.warnings.length > 0 && <ul className="mt-2 w-48 space-y-1 text-[10px] leading-relaxed text-amber-300">{row.warnings.map((warning, warningIndex) => <li key={`${warning}-${warningIndex}`}>• {warning}</li>)}</ul>}</td>
                   <td className="p-3"><select data-testid={`select-transcription-occupancy-${index}`} value={row.occupied} onChange={(event) => updateRow(index, "occupied", event.target.value as EditableRow["occupied"])} className={`${fieldClass} w-28`}><option value="unknown">Revisar</option><option value="occupied">Ocupada</option><option value="available">Disponible</option></select></td>
                    <td className="p-3"><input data-testid={`input-transcription-code-${index}`} value={row.patientCode} maxLength={20} disabled={row.occupied === "available"} onChange={(event) => updateRow(index, "patientCode", event.target.value)} className={`${fieldClass} w-28 uppercase`} /></td>
+                   <td className="p-3"><input data-testid={`input-transcription-age-${index}`} type="text" inputMode="numeric" pattern="[0-9]*" value={row.age} disabled={row.occupied === "available"} onChange={(event) => updateRow(index, "age", event.target.value.replace(/[^0-9]/g, ''))} className={`${fieldClass} w-16 font-mono`} /></td>
+                   <td className="p-3"><input data-testid={`input-transcription-affiliation-${index}`} value={row.affiliation} maxLength={120} disabled={row.occupied === "available"} onChange={(event) => updateRow(index, "affiliation", event.target.value)} className={`${fieldClass} w-28 uppercase`} /></td>
                    <td className="p-3"><input data-testid={`input-transcription-diagnosis-${index}`} value={row.diagnosis} maxLength={160} disabled={row.occupied === "available"} onChange={(event) => updateRow(index, "diagnosis", event.target.value)} className={`${fieldClass} w-40`} /></td>
                   {(["urinaryCatheterDays", "nasogastricTubeDays", "centralLineDays"] as const).map((key) => <td key={key} className="p-3"><input data-testid={`input-transcription-${key}-${index}`} type="text" inputMode="numeric" pattern="[0-9]*" value={row[key]} disabled={row.occupied === "available"} onChange={(event) => updateRow(index, key, event.target.value.replace(/[^0-9]/g, ''))} className={`${fieldClass} w-20 font-mono`} /></td>)}
                    <td className="p-3"><select data-testid={`select-transcription-culture-type-${index}`} value={row.cultureType} disabled={row.occupied === "available"} onChange={(event) => updateRow(index, "cultureType", event.target.value as EditableRow["cultureType"])} className={`${fieldClass} w-28`}><option value="unknown">Revisar</option><option value="none">Sin cultivo</option><option value="urine">Orina</option><option value="blood">Sangre</option><option value="respiratory">Respiratorio</option><option value="other">Otro</option></select></td>
