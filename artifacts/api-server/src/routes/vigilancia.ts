@@ -693,6 +693,16 @@ async function extractGeminiOcr(fileBuffer: Buffer<ArrayBufferLike>, mimeType: s
       rows: Array.isArray(t.rows) ? t.rows.map((r: any) => (Array.isArray(r) ? r : (r.cells || []))) : []
     }));
   }
+  if (Array.isArray(parsed.rows)) {
+    for (const row of parsed.rows) {
+      if (typeof row.culturePositiveDate === "string" && !/^\d{4}-\d{2}-\d{2}$/.test(row.culturePositiveDate)) {
+        row.culturePositiveDate = null;
+      }
+      if (typeof row.rectalSwabPositiveDate === "string" && !/^\d{4}-\d{2}-\d{2}$/.test(row.rectalSwabPositiveDate)) {
+        row.rectalSwabPositiveDate = null;
+      }
+    }
+  }
   
   return parsed;
 }
