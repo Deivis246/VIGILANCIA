@@ -513,8 +513,26 @@ const transcriptionResponseSchema = {
     },
     warnings: { type: "ARRAY", items: { type: "STRING" } },
     reviewedRequired: { type: "BOOLEAN" },
+    dynamicTables: {
+      type: "ARRAY",
+      items: {
+        type: "OBJECT",
+        properties: {
+          title: { type: "STRING" },
+          columns: { type: "ARRAY", items: { type: "STRING" } },
+          rows: {
+            type: "ARRAY",
+            items: {
+              type: "ARRAY",
+              items: { type: "STRING" },
+            },
+          },
+        },
+        required: ["title", "columns", "rows"],
+      },
+    },
   },
-  required: ["rows", "warnings", "reviewedRequired"],
+  required: ["rows", "warnings", "reviewedRequired", "dynamicTables"],
 } as const;
 
 const outbreakPredictionResponseSchema = {
