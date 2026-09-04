@@ -503,7 +503,7 @@ const transcriptionResponseSchema = {
           warnings: { type: "ARRAY", items: { type: "STRING" } },
         },
         required: [
-          "bedId", "occupied", "patientCode", "stayDays", "urinaryCatheterDays",
+          "bedId", "occupied", "patientCode", "diagnosis", "stayDays", "urinaryCatheterDays",
           "nasogastricTubeDays", "centralLineDays", "cultureType", "cultureStatus",
           "cultureOrganism", "culturePositiveDate", "isolation", "rectalSwabStatus", "rectalSwabOrganism",
           "rectalSwabPositiveDate",
