@@ -11,6 +11,7 @@ import {
   type VigilanciaTranscriptionRow,
 } from "@workspace/api-client-react";
 import { AlertTriangle, Camera, Check, FileText, ImageUp, LoaderCircle, RotateCcw, ShieldCheck, Trash2 } from "lucide-react";
+import { ErrorBoundary, type ErrorFallbackProps } from "@/components/error-boundary";
 
 const MAX_IMAGE_BYTES = 6 * 1024 * 1024;
 const MAX_PDF_BYTES = 20 * 1024 * 1024;
@@ -150,7 +151,7 @@ async function fileToBase64(file: File) {
   });
 }
 
-export function CensusTranscription() {
+function CensusTranscriptionInner() {
   const queryClient = useQueryClient();
   const transcription = useTranscribeVigilanciaCensus();
   const [file, setFile] = useState<File | null>(null);
@@ -451,6 +452,43 @@ export function CensusTranscription() {
           <div data-testid="transcription-confirmation" className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"><div><p className="text-sm font-semibold">¿Aplicar {selectedRows.length} filas revisadas?</p><p className="mt-1 text-xs text-muted-foreground">Las camas ocupadas se guardarán y las marcadas disponibles se liberarán.</p></div><div className="flex gap-2"><button type="button" onClick={() => setConfirming(false)} disabled={saving} className="flex items-center gap-2 rounded-lg border border-border px-3 py-2.5 text-xs text-muted-foreground hover:bg-muted"><RotateCcw size={14} />Volver a revisar</button><button data-testid="button-confirm-transcription" type="button" onClick={applyRows} disabled={saving} className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground disabled:opacity-50">{saving ? <LoaderCircle className="animate-spin" size={16} /> : <Check size={16} />}{saving ? "Guardando…" : "Confirmar y guardar"}</button></div></div>}
         </div>
       </section>}
+    </div>
+  );
+}
+
+export function CensusTranscription() {
+  return (
+    <ErrorBoundary FallbackComponent={TranscriptionErrorFallback}>
+      <CensusTranscriptionInner />
+    </ErrorBoundary>
+  );
+}
+
+function TranscriptionErrorFallback({ error, resetError }: ErrorFallbackProps) {
+  return (
+    <div className="flex flex-col items-center justify-center p-8 text-center bg-destructive/10 rounded-xl border border-destructive/20 mt-8">
+      <AlertTriangle className="h-12 w-12 text-destructive mb-4" />
+      <h2 className="text-lg font-semibold text-destructive">Error en la transcripción</h2>
+      <p className="text-sm text-destructive/80 mt-2 max-w-lg">
+        La aplicación encontró un error inesperado al procesar los datos de la IA o al renderizar la interfaz. Para ayudarnos a solucionarlo, envía una captura de pantalla del mensaje técnico a continuación.
+      </p>
+      <div className="mt-6 text-left w-full max-w-2xl bg-black/80 rounded-md p-4 overflow-auto">
+        <p className="text-xs font-mono text-red-400 font-bold mb-2">Mensaje técnico para depuración:</p>
+        <pre className="text-xs font-mono text-red-300 break-all whitespace-pre-wrap">
+          {error.message || String(error)}
+        </pre>
+        {error.stack && (
+          <pre className="text-[10px] font-mono text-red-300/60 mt-4 overflow-auto max-h-40">
+            {error.stack}
+          </pre>
+        )}
+      </div>
+      <button
+        onClick={resetError}
+        className="mt-6 rounded-md bg-destructive px-4 py-2 text-sm font-medium text-destructive-foreground hover:bg-destructive/90"
+      >
+        Intentar nuevamente
+      </button>
     </div>
   );
 }
