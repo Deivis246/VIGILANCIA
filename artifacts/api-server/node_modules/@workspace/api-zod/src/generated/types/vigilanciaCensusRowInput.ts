@@ -79,4 +79,9 @@ export interface VigilanciaCensusRowInput {
      * @nullable
      */
   isolation: string | null;
+  /**
+     * @nullable
+     * @pattern ^\d{4}-\d{2}-\d{2}$
+     */
+  censusDate: string | null;
 }

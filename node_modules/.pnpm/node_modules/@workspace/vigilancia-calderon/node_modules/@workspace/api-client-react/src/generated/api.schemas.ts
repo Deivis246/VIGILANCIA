@@ -352,6 +352,11 @@ export interface VigilanciaBedRecord {
   rectalSwabPositiveDate: string | null;
   /** @maxLength 120 */
   isolation: string;
+  /**
+     * @nullable
+     * @pattern ^\d{4}-\d{2}-\d{2}$
+     */
+  censusDate: string | null;
   updatedAt: string;
 }
 
@@ -449,6 +454,11 @@ export interface VigilanciaBedRecordInput {
   rectalSwabPositiveDate?: string | null;
   /** @maxLength 120 */
   isolation: string;
+  /**
+     * @nullable
+     * @pattern ^\d{4}-\d{2}-\d{2}$
+     */
+  censusDate: string | null;
 }
 
 export type VigilanciaCensusRowInputCultureType = typeof VigilanciaCensusRowInputCultureType[keyof typeof VigilanciaCensusRowInputCultureType];
@@ -550,6 +560,11 @@ export interface VigilanciaCensusRowInput {
      * @nullable
      */
   isolation: string | null;
+  /**
+     * @nullable
+     * @pattern ^\d{4}-\d{2}-\d{2}$
+     */
+  censusDate: string | null;
 }
 
 export interface VigilanciaCensusApplyInput {
@@ -711,6 +726,11 @@ export interface VigilanciaTranscriptionRow {
      * @pattern ^\d{4}-\d{2}-\d{2}$
      */
   rectalSwabPositiveDate: string | null;
+  /**
+     * @nullable
+     * @pattern ^\d{4}-\d{2}-\d{2}$
+     */
+  censusDate: string | null;
   confidence: VigilanciaTranscriptionRowConfidence;
   /** @items.maxLength 240 */
   warnings: string[];

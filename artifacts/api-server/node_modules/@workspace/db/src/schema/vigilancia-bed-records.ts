@@ -22,6 +22,7 @@ export const vigilanciaBedRecordsTable = pgTable("vigilancia_bed_records", {
   rectalSwabOrganism: text("rectal_swab_organism").notNull(),
   rectalSwabPositiveDate: date("rectal_swab_positive_date", { mode: "string" }),
   isolation: text("isolation").notNull(),
+  censusDate: date("census_date", { mode: "string" }),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 

@@ -26,6 +26,7 @@ export type BedClinicalRecord = {
   rectalSwabOrganism: string;
   rectalSwabPositiveDate: string;
   isolation: string;
+  censusDate: string;
   updatedAt: string;
 };
 
@@ -74,6 +75,7 @@ export function mapBedClinicalRecords(records: VigilanciaBedRecord[]): BedClinic
       rectalSwabOrganism: record.rectalSwabOrganism,
       rectalSwabPositiveDate: record.rectalSwabPositiveDate ?? "",
       isolation: record.isolation,
+      censusDate: record.censusDate ?? "",
       updatedAt: record.updatedAt,
     },
   ]));
@@ -100,6 +102,7 @@ export function toBedRecordInput(record: BedClinicalRecord): VigilanciaBedRecord
     rectalSwabOrganism: record.rectalSwabStatus === "positive" ? record.rectalSwabOrganism : "",
     rectalSwabPositiveDate: record.rectalSwabStatus === "positive" ? record.rectalSwabPositiveDate || null : null,
     isolation: record.isolation,
+    censusDate: record.censusDate || null,
   };
 }
 
@@ -124,6 +127,7 @@ export function getBedRecordDefaults(bed: VigilanciaBed): BedClinicalRecord {
     rectalSwabOrganism: bed.rectalSwabOrganism ?? "",
     rectalSwabPositiveDate: "",
     isolation: bed.isolation ?? "none",
+    censusDate: "",
     updatedAt: "",
   };
 }
@@ -234,6 +238,7 @@ export function BedClinicalRecordDialog({
           culturePositiveDate: form.cultureStatus === "positive" && form.cultureType !== "none" ? form.culturePositiveDate : "",
           rectalSwabOrganism: form.rectalSwabStatus === "positive" ? form.rectalSwabOrganism.trim() : "",
           rectalSwabPositiveDate: form.rectalSwabStatus === "positive" ? form.rectalSwabPositiveDate : "",
+          censusDate: form.censusDate,
           updatedAt: new Date().toISOString(),
         }
       : {
@@ -256,6 +261,7 @@ export function BedClinicalRecordDialog({
           rectalSwabOrganism: "",
           rectalSwabPositiveDate: "",
           isolation: "",
+          censusDate: "",
           updatedAt: new Date().toISOString(),
         };
     setSaving(true);

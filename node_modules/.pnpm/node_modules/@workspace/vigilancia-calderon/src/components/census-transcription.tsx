@@ -42,6 +42,7 @@ type EditableRow = {
   cultureOrganism: string;
   culturePositiveDate: string;
   isolation: string;
+  censusDate: string;
   rectalSwabStatus: "unknown" | "pending" | "negative" | "positive";
   rectalSwabOrganism: string;
   rectalSwabPositiveDate: string;
@@ -84,6 +85,7 @@ function makeEditableRow(row: VigilanciaTranscriptionRow): EditableRow {
     cultureOrganism: row.cultureOrganism ?? "",
     culturePositiveDate: row.culturePositiveDate ?? "",
     isolation: row.isolation ?? "",
+    censusDate: row.censusDate ?? "",
     rectalSwabStatus: row.rectalSwabStatus ?? "unknown",
     rectalSwabOrganism: row.rectalSwabOrganism ?? "",
     rectalSwabPositiveDate: row.rectalSwabPositiveDate ?? "",
@@ -119,6 +121,7 @@ function toInput(row: EditableRow): VigilanciaBedRecordInput {
     cultureOrganism: row.cultureStatus === "positive" ? row.cultureOrganism.trim() : "",
     culturePositiveDate: row.cultureStatus === "positive" && row.cultureType !== "none" ? row.culturePositiveDate : null,
     isolation: row.isolation.trim(),
+    censusDate: row.censusDate || null,
     rectalSwabStatus: row.rectalSwabStatus === "unknown" ? "pending" : row.rectalSwabStatus,
     rectalSwabOrganism: row.rectalSwabStatus === "positive" ? row.rectalSwabOrganism.trim() : "",
     rectalSwabPositiveDate: row.rectalSwabStatus === "positive" ? row.rectalSwabPositiveDate : null,
@@ -402,7 +405,7 @@ export function CensusTranscription() {
            <table className="w-full min-w-[2140px] border-collapse text-left">
             <thead className="bg-muted/60 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
                  <tr>
-                   <th className="p-3">Aplicar</th><th className="p-3">Cama</th><th className="p-3">Estado</th><th className="p-3">Código</th><th className="p-3">Edad</th><th className="p-3">Afiliación</th><th className="p-3">Diagnóstico breve</th><th className="p-3">CUP</th><th className="p-3">CVC</th><th className="p-3">Drenaje</th><th className="p-3">Cat. Diálisis</th><th className="p-3">SNG</th><th className="p-3">Cultivo</th><th className="p-3">Resultado</th><th className="p-3">Fecha cultivo positivo</th><th className="p-3">Bacteria</th><th className="p-3">Aislamiento</th><th className="p-3">Hisopado</th><th className="p-3">Bacteria hisopado</th><th className="p-3">Fecha hisopado positivo</th><th className="p-3">Confianza</th>
+                   <th className="p-3">Aplicar</th><th className="p-3">Cama</th><th className="p-3">Estado</th><th className="p-3">Código</th><th className="p-3">Edad</th><th className="p-3">Afiliación</th><th className="p-3">Diagnóstico breve</th><th className="p-3">Fecha censo</th><th className="p-3">CUP</th><th className="p-3">CVC</th><th className="p-3">Drenaje</th><th className="p-3">Cat. Diálisis</th><th className="p-3">SNG</th><th className="p-3">Cultivo</th><th className="p-3">Resultado</th><th className="p-3">Fecha cultivo positivo</th><th className="p-3">Bacteria</th><th className="p-3">Aislamiento</th><th className="p-3">Hisopado</th><th className="p-3">Bacteria hisopado</th><th className="p-3">Fecha hisopado positivo</th><th className="p-3">Confianza</th>
               </tr>
             </thead>
             <tbody>
@@ -416,6 +419,7 @@ export function CensusTranscription() {
                    <td className="p-3"><input data-testid={`input-transcription-age-${index}`} type="text" inputMode="numeric" pattern="[0-9]*" value={row.age} disabled={row.occupied === "available"} onChange={(event) => updateRow(index, "age", event.target.value.replace(/[^0-9]/g, ''))} className={`${fieldClass} w-16 font-mono`} /></td>
                    <td className="p-3"><input data-testid={`input-transcription-affiliation-${index}`} value={row.affiliation} maxLength={120} disabled={row.occupied === "available"} onChange={(event) => updateRow(index, "affiliation", event.target.value)} className={`${fieldClass} w-28 uppercase`} /></td>
                    <td className="p-3"><input data-testid={`input-transcription-diagnosis-${index}`} value={row.diagnosis} maxLength={160} disabled={row.occupied === "available"} onChange={(event) => updateRow(index, "diagnosis", event.target.value)} className={`${fieldClass} w-40`} /></td>
+                   <td className="p-3"><input data-testid={`input-transcription-census-date-${index}`} type="date" value={row.censusDate} max="9999-12-31" disabled={row.occupied === "available"} onChange={(event) => updateRow(index, "censusDate", event.target.value)} className={`${fieldClass} w-36`} /></td>
                   {(["urinaryCatheterDays", "centralLineDays", "drainDays", "dialysisCatheterDays", "nasogastricTubeDays"] as const).map((key) => <td key={key} className="p-3"><input data-testid={`input-transcription-${key}-${index}`} type="text" inputMode="numeric" pattern="[0-9]*" value={row[key]} disabled={row.occupied === "available"} onChange={(event) => updateRow(index, key, event.target.value.replace(/[^0-9]/g, ''))} className={`${fieldClass} w-20 font-mono`} /></td>)}
                    <td className="p-3"><select data-testid={`select-transcription-culture-type-${index}`} value={row.cultureType} disabled={row.occupied === "available"} onChange={(event) => updateRow(index, "cultureType", event.target.value as EditableRow["cultureType"])} className={`${fieldClass} w-28`}><option value="unknown">Revisar</option><option value="none">Sin cultivo</option><option value="urine">Orina</option><option value="blood">Sangre</option><option value="respiratory">Respiratorio</option><option value="other">Otro</option></select></td>
                    <td className="p-3"><select data-testid={`select-transcription-culture-status-${index}`} value={row.cultureStatus} disabled={row.occupied === "available" || row.cultureType === "none"} onChange={(event) => updateRow(index, "cultureStatus", event.target.value as EditableRow["cultureStatus"])} className={`${fieldClass} w-24`}><option value="unknown">Revisar</option><option value="pending">Pendiente</option><option value="negative">Negativo</option><option value="positive">Positivo</option></select></td>

@@ -50,6 +50,7 @@ function bedRecordDefaults(bed: VigilanciaBed): BedClinicalRecord {
     rectalSwabOrganism: bed.rectalSwabOrganism ?? "",
     rectalSwabPositiveDate: "",
     isolation: bed.isolation ?? "",
+    censusDate: "",
     updatedAt: "",
   };
 }

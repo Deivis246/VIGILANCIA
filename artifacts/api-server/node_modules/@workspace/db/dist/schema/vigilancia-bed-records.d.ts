@@ -342,6 +342,23 @@ export declare const vigilanciaBedRecordsTable: import("drizzle-orm/pg-core").Pg
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
+        censusDate: import("drizzle-orm/pg-core").PgColumn<{
+            name: "census_date";
+            tableName: "vigilancia_bed_records";
+            dataType: "string";
+            columnType: "PgDateString";
+            data: string;
+            driverParam: string;
+            notNull: false;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
         updatedAt: import("drizzle-orm/pg-core").PgColumn<{
             name: "updated_at";
             tableName: "vigilancia_bed_records";
@@ -383,6 +400,7 @@ export declare const insertVigilanciaBedRecordSchema: import("zod/v4").ZodObject
     rectalSwabOrganism: import("zod/v4").ZodString;
     rectalSwabPositiveDate: import("zod/v4").ZodOptional<import("zod/v4").ZodNullable<import("zod/v4").ZodString>>;
     isolation: import("zod/v4").ZodString;
+    censusDate: import("zod/v4").ZodOptional<import("zod/v4").ZodNullable<import("zod/v4").ZodString>>;
 }, {
     out: {};
     in: {};

@@ -96,6 +96,11 @@ export interface VigilanciaTranscriptionRow {
      * @pattern ^\d{4}-\d{2}-\d{2}$
      */
   rectalSwabPositiveDate: string | null;
+  /**
+     * @nullable
+     * @pattern ^\d{4}-\d{2}-\d{2}$
+     */
+  censusDate: string | null;
   confidence: VigilanciaTranscriptionRowConfidence;
   /** @items.maxLength 240 */
   warnings: string[];

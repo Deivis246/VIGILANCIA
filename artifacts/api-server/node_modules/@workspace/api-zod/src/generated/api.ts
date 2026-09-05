@@ -222,6 +222,7 @@ export const transcribeVigilanciaCensusResponseRowsItemIsolationMax = 120;
 export const transcribeVigilanciaCensusResponseRowsItemRectalSwabOrganismMax = 120;
 
 export const transcribeVigilanciaCensusResponseRowsItemRectalSwabPositiveDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const transcribeVigilanciaCensusResponseRowsItemCensusDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
 export const transcribeVigilanciaCensusResponseRowsItemWarningsItemMax = 240;
 
 export const transcribeVigilanciaCensusResponseRowsMax = 53;
@@ -252,6 +253,7 @@ export const TranscribeVigilanciaCensusResponse = zod.object({
   "rectalSwabStatus": zod.enum(['pending', 'negative', 'positive']).nullable(),
   "rectalSwabOrganism": zod.string().max(transcribeVigilanciaCensusResponseRowsItemRectalSwabOrganismMax).nullable(),
   "rectalSwabPositiveDate": zod.string().regex(transcribeVigilanciaCensusResponseRowsItemRectalSwabPositiveDateRegExp).nullable(),
+  "censusDate": zod.string().regex(transcribeVigilanciaCensusResponseRowsItemCensusDateRegExp).nullable(),
   "confidence": zod.enum(['high', 'medium', 'low']),
   "warnings": zod.array(zod.string().max(transcribeVigilanciaCensusResponseRowsItemWarningsItemMax))
 })).max(transcribeVigilanciaCensusResponseRowsMax),
@@ -303,6 +305,7 @@ export const getVigilanciaBedRecordsResponseRectalSwabOrganismMax = 120;
 export const getVigilanciaBedRecordsResponseRectalSwabPositiveDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
 export const getVigilanciaBedRecordsResponseIsolationMax = 120;
 
+export const getVigilanciaBedRecordsResponseCensusDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
 
 
 export const GetVigilanciaBedRecordsResponseItem = zod.object({
@@ -326,6 +329,7 @@ export const GetVigilanciaBedRecordsResponseItem = zod.object({
   "rectalSwabOrganism": zod.string().max(getVigilanciaBedRecordsResponseRectalSwabOrganismMax),
   "rectalSwabPositiveDate": zod.string().regex(getVigilanciaBedRecordsResponseRectalSwabPositiveDateRegExp).nullable(),
   "isolation": zod.string().max(getVigilanciaBedRecordsResponseIsolationMax),
+  "censusDate": zod.string().regex(getVigilanciaBedRecordsResponseCensusDateRegExp).nullable(),
   "updatedAt": zod.string()
 })
 export const GetVigilanciaBedRecordsResponse = zod.array(GetVigilanciaBedRecordsResponseItem)
@@ -371,6 +375,7 @@ export const applyVigilanciaCensusBodyRowsItemRectalSwabOrganismMax = 120;
 export const applyVigilanciaCensusBodyRowsItemRectalSwabPositiveDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
 export const applyVigilanciaCensusBodyRowsItemIsolationMax = 120;
 
+export const applyVigilanciaCensusBodyRowsItemCensusDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
 
 
 
@@ -395,7 +400,8 @@ export const ApplyVigilanciaCensusBody = zod.object({
   "rectalSwabStatus": zod.enum(['pending', 'negative', 'positive']),
   "rectalSwabOrganism": zod.string().max(applyVigilanciaCensusBodyRowsItemRectalSwabOrganismMax),
   "rectalSwabPositiveDate": zod.string().regex(applyVigilanciaCensusBodyRowsItemRectalSwabPositiveDateRegExp).nullable(),
-  "isolation": zod.string().max(applyVigilanciaCensusBodyRowsItemIsolationMax).nullable()
+  "isolation": zod.string().max(applyVigilanciaCensusBodyRowsItemIsolationMax).nullable(),
+  "censusDate": zod.string().regex(applyVigilanciaCensusBodyRowsItemCensusDateRegExp).nullable()
 })).min(1)
 })
 
@@ -453,6 +459,7 @@ export const upsertVigilanciaBedRecordBodyRectalSwabOrganismMax = 120;
 export const upsertVigilanciaBedRecordBodyRectalSwabPositiveDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
 export const upsertVigilanciaBedRecordBodyIsolationMax = 120;
 
+export const upsertVigilanciaBedRecordBodyCensusDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
 
 
 export const UpsertVigilanciaBedRecordBody = zod.object({
@@ -474,7 +481,8 @@ export const UpsertVigilanciaBedRecordBody = zod.object({
   "rectalSwabStatus": zod.enum(['pending', 'negative', 'positive']),
   "rectalSwabOrganism": zod.string().max(upsertVigilanciaBedRecordBodyRectalSwabOrganismMax),
   "rectalSwabPositiveDate": zod.string().regex(upsertVigilanciaBedRecordBodyRectalSwabPositiveDateRegExp).nullish(),
-  "isolation": zod.string().max(upsertVigilanciaBedRecordBodyIsolationMax)
+  "isolation": zod.string().max(upsertVigilanciaBedRecordBodyIsolationMax),
+  "censusDate": zod.string().regex(upsertVigilanciaBedRecordBodyCensusDateRegExp).nullable()
 })
 
 export const upsertVigilanciaBedRecordResponsePatientCodeMax = 20;
@@ -512,6 +520,7 @@ export const upsertVigilanciaBedRecordResponseRectalSwabOrganismMax = 120;
 export const upsertVigilanciaBedRecordResponseRectalSwabPositiveDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
 export const upsertVigilanciaBedRecordResponseIsolationMax = 120;
 
+export const upsertVigilanciaBedRecordResponseCensusDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
 
 
 export const UpsertVigilanciaBedRecordResponse = zod.object({
@@ -535,6 +544,7 @@ export const UpsertVigilanciaBedRecordResponse = zod.object({
   "rectalSwabOrganism": zod.string().max(upsertVigilanciaBedRecordResponseRectalSwabOrganismMax),
   "rectalSwabPositiveDate": zod.string().regex(upsertVigilanciaBedRecordResponseRectalSwabPositiveDateRegExp).nullable(),
   "isolation": zod.string().max(upsertVigilanciaBedRecordResponseIsolationMax),
+  "censusDate": zod.string().regex(upsertVigilanciaBedRecordResponseCensusDateRegExp).nullable(),
   "updatedAt": zod.string()
 })
 

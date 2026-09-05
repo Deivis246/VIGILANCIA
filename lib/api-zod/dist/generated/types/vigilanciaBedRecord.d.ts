@@ -74,6 +74,11 @@ export interface VigilanciaBedRecord {
     rectalSwabPositiveDate: string | null;
     /** @maxLength 120 */
     isolation: string;
+    /**
+       * @nullable
+       * @pattern ^\d{4}-\d{2}-\d{2}$
+       */
+    censusDate: string | null;
     updatedAt: string;
 }
 //# sourceMappingURL=vigilanciaBedRecord.d.ts.map
