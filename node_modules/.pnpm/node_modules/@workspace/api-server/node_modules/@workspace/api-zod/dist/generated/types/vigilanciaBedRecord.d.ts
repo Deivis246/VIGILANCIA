@@ -7,7 +7,6 @@
  */
 import type { VigilanciaBedRecordCultureStatus } from './vigilanciaBedRecordCultureStatus';
 import type { VigilanciaBedRecordCultureType } from './vigilanciaBedRecordCultureType';
-import type { VigilanciaBedRecordIsolation } from './vigilanciaBedRecordIsolation';
 import type { VigilanciaBedRecordRectalSwabStatus } from './vigilanciaBedRecordRectalSwabStatus';
 export interface VigilanciaBedRecord {
     bedId: string;
@@ -46,6 +45,16 @@ export interface VigilanciaBedRecord {
        * @nullable
        */
     centralLineDays: number | null;
+    /**
+       * @minimum 0
+       * @nullable
+       */
+    drainDays: number | null;
+    /**
+       * @minimum 0
+       * @nullable
+       */
+    dialysisCatheterDays: number | null;
     cultureType: VigilanciaBedRecordCultureType;
     cultureStatus: VigilanciaBedRecordCultureStatus;
     /** @maxLength 120 */
@@ -63,7 +72,8 @@ export interface VigilanciaBedRecord {
        * @pattern ^\d{4}-\d{2}-\d{2}$
        */
     rectalSwabPositiveDate: string | null;
-    isolation: VigilanciaBedRecordIsolation;
+    /** @maxLength 120 */
+    isolation: string;
     updatedAt: string;
 }
 //# sourceMappingURL=vigilanciaBedRecord.d.ts.map

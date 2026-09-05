@@ -95,11 +95,13 @@ type LocalOcrRow = {
   urinaryCatheterDays: number | null;
   nasogastricTubeDays: number | null;
   centralLineDays: number | null;
+  drainDays: number | null;
+  dialysisCatheterDays: number | null;
   cultureType: "none" | "urine" | "blood" | "respiratory" | "other" | null;
   cultureStatus: "pending" | "negative" | "positive" | null;
   cultureOrganism: string | null;
   culturePositiveDate: string | null;
-  isolation: "none" | "respiratory" | "contact" | "droplets" | null;
+  isolation: string | null;
   rectalSwabStatus: "pending" | "negative" | "positive" | null;
   rectalSwabOrganism: string | null;
   rectalSwabPositiveDate: string | null;
@@ -176,13 +178,10 @@ function parseLocalOcrRow(segment: string, bedId: string): LocalOcrRow {
       : /\b(?:HISOPADO|SWAB)\b[\s\S]{0,80}\bPENDIENTE\b/.test(upperSegment)
         ? "pending"
         : null;
-  const isolation = /\b(?:CONTACTO|CONTACT)\b/.test(upperSegment)
-    ? "contact"
-    : /\b(?:GOTAS|DROPLETS)\b/.test(upperSegment)
-      ? "droplets"
-      : /\b(?:RESPIRATORIO|A[ÉE]REO)\b/.test(upperSegment)
-        ? "respiratory"
-        : null;
+  const isolation = limitOcrText(
+    normalizedSegment.match(/(?:AISLAMIENTO|AISL\.)\s*[:#-]?\s*([^|\n;,]{2,120})/i)?.[1],
+    120,
+  );
   const cultureOrganism = limitOcrText(
     normalizedSegment.match(/(?:BACTERIA|GERMEN|MICROORGANISMO)\s*[:#-]?\s*([^|\n;,]{2,120})/i)?.[1],
     120,
@@ -200,9 +199,11 @@ function parseLocalOcrRow(segment: string, bedId: string): LocalOcrRow {
     affiliation,
     diagnosis,
     stayDays: parseOcrDays(normalizedSegment, ["ESTANCIA", "D[IÍ]AS DE ESTANCIA"]),
-    urinaryCatheterDays: parseOcrDays(normalizedSegment, ["SONDA VESICAL", "SONDA URINARIA", "S\\.?\\s*VESICAL"]),
+    urinaryCatheterDays: parseOcrDays(normalizedSegment, ["SONDA VESICAL", "SONDA URINARIA", "S\\.?\\s*VESICAL", "CUP"]),
     nasogastricTubeDays: parseOcrDays(normalizedSegment, ["SONDA NASOG[ÁA]STRICA", "SONDA NASOGASTRICA", "S\\.?\\s*NG", "SNG", "S\\. N\\. G\\."]),
-    centralLineDays: parseOcrDays(normalizedSegment, ["V[IÍ]A CENTRAL", "LINEA CENTRAL", "L[IÍ]NEA CENTRAL", "V\\.?\\s*CENTRAL"]),
+    centralLineDays: parseOcrDays(normalizedSegment, ["V[IÍ]A CENTRAL", "LINEA CENTRAL", "L[IÍ]NEA CENTRAL", "V\\.?\\s*CENTRAL", "CVC"]),
+    drainDays: parseOcrDays(normalizedSegment, ["DRENAJE"]),
+    dialysisCatheterDays: parseOcrDays(normalizedSegment, ["CAT\\.?DIALISIS", "CAT[É|E]TER DI[Á|A]LISIS"]),
     cultureType,
     cultureStatus,
     cultureOrganism,
@@ -228,6 +229,8 @@ function clearClinicalDataForAvailableBeds(row: LocalOcrRow): LocalOcrRow {
     urinaryCatheterDays: null,
     nasogastricTubeDays: null,
     centralLineDays: null,
+    drainDays: null,
+    dialysisCatheterDays: null,
     cultureType: null,
     cultureStatus: null,
     cultureOrganism: null,
@@ -504,11 +507,13 @@ const transcriptionResponseSchema = {
           urinaryCatheterDays: { type: "INTEGER", nullable: true },
           nasogastricTubeDays: { type: "INTEGER", nullable: true },
           centralLineDays: { type: "INTEGER", nullable: true },
+          drainDays: { type: "INTEGER", nullable: true },
+          dialysisCatheterDays: { type: "INTEGER", nullable: true },
           cultureType: { type: "STRING", enum: ["none", "urine", "blood", "respiratory", "other"], nullable: true },
           cultureStatus: { type: "STRING", enum: ["pending", "negative", "positive"], nullable: true },
           cultureOrganism: { type: "STRING", nullable: true },
           culturePositiveDate: { type: "STRING", nullable: true },
-          isolation: { type: "STRING", enum: ["none", "respiratory", "contact", "droplets"], nullable: true },
+          isolation: { type: "STRING", nullable: true },
           rectalSwabStatus: { type: "STRING", enum: ["pending", "negative", "positive"], nullable: true },
           rectalSwabOrganism: { type: "STRING", nullable: true },
           rectalSwabPositiveDate: { type: "STRING", nullable: true },
@@ -517,7 +522,7 @@ const transcriptionResponseSchema = {
         },
         required: [
           "bedId", "occupied", "patientCode", "age", "affiliation", "diagnosis", "stayDays", "urinaryCatheterDays",
-          "nasogastricTubeDays", "centralLineDays", "cultureType", "cultureStatus",
+          "nasogastricTubeDays", "centralLineDays", "drainDays", "dialysisCatheterDays", "cultureType", "cultureStatus",
           "cultureOrganism", "culturePositiveDate", "isolation", "rectalSwabStatus", "rectalSwabOrganism",
           "rectalSwabPositiveDate",
           "confidence", "warnings",
@@ -684,7 +689,7 @@ async function extractGeminiOcr(fileBuffer: Buffer<ArrayBufferLike>, mimeType: s
             },
           },
           {
-            text: "Extrae los datos de este documento clínico de dos maneras diferentes:\n1. EXTRAE TODAS LAS TABLAS DEL DOCUMENTO Y SEPÁRALAS (dynamicTables): Revisa CADA PÁGINA del PDF minuciosamente. Identifica CADA TABLA por separado (ej. 'Ingresos', 'Egresos', 'Transferencias', 'Defunciones', 'Resumen del día', 'Censos de áreas clínicas', 'Aislamientos', etc). ¡MUY IMPORTANTE!: NO fusiones diferentes tablas en una sola. Si hay 8 tablas diferentes en el PDF, el array 'dynamicTables' debe tener 8 elementos. Para cada tabla, extrae su título real, la lista EXACTA de nombres de columnas (si sobran columnas en el JSON, elimínalas; si faltan, agrégalas) y el contenido de TODAS sus filas. BAJO NINGUNA CIRCUNSTANCIA OMITAS COLUMNAS NI FILAS.\n2. EXTRAE LOS DATOS CLÍNICOS ESENCIALES (rows): Independientemente del formato de la tabla, mapea cada paciente a nuestra estructura clínica estandarizada. Identifica si la cama está disponible/libre u ocupada. Traduce columnas como 'SNG' a nasogastricTubeDays (número de días, si está marcado o tiene fecha asume 0 si no dice días), 'CVC' o 'Vía Central' a centralLineDays, 'S. Vesical' o 'CUP' a urinaryCatheterDays. IMPORTANTE PARA bedId: Combina la columna HABITACION y CAMA (ej. 201 y A) para formar el ID exacto en minúscula (ej. 201-a). Para age, extrae la EDAD en números enteros. Para affiliation, extrae el texto de AFILIACION.\nAmbas extracciones deben ser devueltas en el JSON final. Pon reviewedRequired en true.\n\nADVERTENCIA CRÍTICA: PROHIBIDO OMITIR INFORMACIÓN. DEBES LEER TODAS LAS PÁGINAS DEL DOCUMENTO HASTA EL FINAL Y EXTRAER TODAS LAS FILAS Y TODAS LAS TABLAS. ESTO ES PARA UN ENTORNO HOSPITALARIO CRÍTICO DONDE OMITIR UN PACIENTE PUEDE COSTAR VIDAS. NO HAGAS RESÚMENES, NO ACORTES LA RESPUESTA, PROCESA EL PDF ENTERO.",
+            text: "Extrae los datos de este documento clínico de dos maneras diferentes:\n1. EXTRAE TODAS LAS TABLAS DEL DOCUMENTO Y SEPÁRALAS (dynamicTables): Revisa CADA PÁGINA del PDF minuciosamente. Identifica CADA TABLA por separado (ej. 'Ingresos', 'Egresos', 'Transferencias', 'Defunciones', 'Resumen del día', 'Censos de áreas clínicas', 'Aislamientos', 'Pacientes UCI', etc). ¡MUY IMPORTANTE!: NO fusiones diferentes tablas en una sola. Si hay 8 tablas diferentes en el PDF, el array 'dynamicTables' debe tener 8 elementos. Para cada tabla, extrae su título real, la lista EXACTA de nombres de columnas (si sobran columnas en el JSON, elimínalas; si faltan, agrégalas) y el contenido de TODAS sus filas. BAJO NINGUNA CIRCUNSTANCIA OMITAS COLUMNAS NI FILAS.\n2. EXTRAE LOS DATOS CLÍNICOS ESENCIALES (rows): Independientemente del formato de la tabla o en qué tabla estén, mapea CADA PACIENTE (incluso los de UCI) a nuestra estructura clínica estandarizada. ¡PROHIBIDO OMITIR CAMAS! DEBES EXTRAER UNA FILA PARA CADA CAMA FÍSICA QUE APAREZCA EN EL DOCUMENTO, ESTÉ VACÍA O LLENA, TENGA CÉDULA O NO. Identifica si la cama está disponible/libre u ocupada. Traduce columnas como 'SNG' a nasogastricTubeDays (número de días, si está marcado o tiene fecha asume 0 si no dice días), 'CVC' o 'Vía Central' a centralLineDays, 'S. Vesical' o 'CUP' a urinaryCatheterDays, 'DRENAJE' a drainDays, 'CAT.DIALISIS' a dialysisCatheterDays. IMPORTANTE PARA bedId: Combina la columna HABITACION y CAMA (ej. 201 y A, 221 y A) para formar el ID exacto en minúscula (ej. 201-a, 221-a). Para age, extrae la EDAD en números enteros. Para affiliation, extrae el texto de AFILIACION. Para isolation, extrae literalmente el texto que diga sobre Aislamiento.\nAmbas extracciones deben ser devueltas en el JSON final. Pon reviewedRequired en true.\n\nADVERTENCIA CRÍTICA: PROHIBIDO OMITIR INFORMACIÓN O FILAS. DEBES LEER TODAS LAS PÁGINAS DEL DOCUMENTO HASTA EL FINAL Y EXTRAER TODAS LAS FILAS Y TODAS LAS TABLAS. ESTO ES PARA UN ENTORNO HOSPITALARIO CRÍTICO DONDE OMITIR UN PACIENTE PUEDE COSTAR VIDAS. NO HAGAS RESÚMENES, NO ACORTES LA RESPUESTA, PROCESA EL PDF ENTERO.",
           },
         ],
       },
@@ -742,11 +747,15 @@ function serializeBedRecord(record: typeof vigilanciaBedRecordsTable.$inferSelec
 type BedRecordInput = {
   occupied: boolean;
   patientCode: string;
+  age: number | null;
+  affiliation: string | null;
   diagnosis: string;
   stayDays: number | null;
   urinaryCatheterDays: number | null;
   nasogastricTubeDays: number | null;
   centralLineDays: number | null;
+  drainDays: number | null;
+  dialysisCatheterDays: number | null;
   cultureType: "none" | "urine" | "blood" | "respiratory" | "other";
   cultureStatus: "pending" | "negative" | "positive";
   cultureOrganism: string;
@@ -754,7 +763,7 @@ type BedRecordInput = {
   rectalSwabStatus: "pending" | "negative" | "positive";
   rectalSwabOrganism: string;
   rectalSwabPositiveDate?: string | null;
-  isolation: "none" | "respiratory" | "contact" | "droplets";
+  isolation: string | null;
 };
 
 function buildBedRecordValues(bedId: string, input: BedRecordInput) {
@@ -777,11 +786,15 @@ function buildBedRecordValues(bedId: string, input: BedRecordInput) {
       bedId,
       occupied: true,
       patientCode,
+      age: input.age,
+      affiliation: input.affiliation,
       diagnosis,
       stayDays: input.stayDays,
       urinaryCatheterDays: input.urinaryCatheterDays,
       nasogastricTubeDays: input.nasogastricTubeDays,
       centralLineDays: input.centralLineDays,
+      drainDays: input.drainDays,
+      dialysisCatheterDays: input.dialysisCatheterDays,
       cultureType: input.cultureType,
       cultureStatus: input.cultureType === "none" ? "pending" : input.cultureStatus,
       cultureOrganism: input.cultureStatus === "positive" ? cultureOrganism : "",
@@ -789,7 +802,7 @@ function buildBedRecordValues(bedId: string, input: BedRecordInput) {
       rectalSwabStatus: input.rectalSwabStatus,
       rectalSwabOrganism: input.rectalSwabStatus === "positive" ? rectalSwabOrganism : "",
       rectalSwabPositiveDate,
-      isolation: input.isolation,
+      isolation: input.isolation ?? "",
       updatedAt: new Date(),
     },
   } as const;

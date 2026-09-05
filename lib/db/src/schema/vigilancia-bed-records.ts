@@ -12,6 +12,8 @@ export const vigilanciaBedRecordsTable = pgTable("vigilancia_bed_records", {
   urinaryCatheterDays: integer("urinary_catheter_days"),
   nasogastricTubeDays: integer("nasogastric_tube_days"),
   centralLineDays: integer("central_line_days"),
+  drainDays: integer("drain_days"),
+  dialysisCatheterDays: integer("dialysis_catheter_days"),
   cultureType: text("culture_type").notNull(),
   cultureStatus: text("culture_status").notNull(),
   cultureOrganism: text("culture_organism").notNull(),

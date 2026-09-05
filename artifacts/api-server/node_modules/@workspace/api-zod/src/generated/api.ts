@@ -189,6 +189,11 @@ export const TranscribeVigilanciaCensusBody = zod.object({
 
 export const transcribeVigilanciaCensusResponseRowsItemPatientCodeMax = 20;
 
+export const transcribeVigilanciaCensusResponseRowsItemAgeMin = 0;
+export const transcribeVigilanciaCensusResponseRowsItemAgeMultipleOf = 1;
+
+export const transcribeVigilanciaCensusResponseRowsItemAffiliationMax = 120;
+
 export const transcribeVigilanciaCensusResponseRowsItemDiagnosisMax = 160;
 
 export const transcribeVigilanciaCensusResponseRowsItemStayDaysMin = 0;
@@ -203,9 +208,17 @@ export const transcribeVigilanciaCensusResponseRowsItemNasogastricTubeDaysMultip
 export const transcribeVigilanciaCensusResponseRowsItemCentralLineDaysMin = 0;
 export const transcribeVigilanciaCensusResponseRowsItemCentralLineDaysMultipleOf = 1;
 
+export const transcribeVigilanciaCensusResponseRowsItemDrainDaysMin = 0;
+export const transcribeVigilanciaCensusResponseRowsItemDrainDaysMultipleOf = 1;
+
+export const transcribeVigilanciaCensusResponseRowsItemDialysisCatheterDaysMin = 0;
+export const transcribeVigilanciaCensusResponseRowsItemDialysisCatheterDaysMultipleOf = 1;
+
 export const transcribeVigilanciaCensusResponseRowsItemCultureOrganismMax = 120;
 
 export const transcribeVigilanciaCensusResponseRowsItemCulturePositiveDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const transcribeVigilanciaCensusResponseRowsItemIsolationMax = 120;
+
 export const transcribeVigilanciaCensusResponseRowsItemRectalSwabOrganismMax = 120;
 
 export const transcribeVigilanciaCensusResponseRowsItemRectalSwabPositiveDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
@@ -222,16 +235,20 @@ export const TranscribeVigilanciaCensusResponse = zod.object({
   "bedId": zod.string().nullable(),
   "occupied": zod.boolean().nullable(),
   "patientCode": zod.string().max(transcribeVigilanciaCensusResponseRowsItemPatientCodeMax).nullable(),
+  "age": zod.number().min(transcribeVigilanciaCensusResponseRowsItemAgeMin).multipleOf(transcribeVigilanciaCensusResponseRowsItemAgeMultipleOf).nullable(),
+  "affiliation": zod.string().max(transcribeVigilanciaCensusResponseRowsItemAffiliationMax).nullable(),
   "diagnosis": zod.string().max(transcribeVigilanciaCensusResponseRowsItemDiagnosisMax).nullable(),
   "stayDays": zod.number().min(transcribeVigilanciaCensusResponseRowsItemStayDaysMin).multipleOf(transcribeVigilanciaCensusResponseRowsItemStayDaysMultipleOf).nullable(),
   "urinaryCatheterDays": zod.number().min(transcribeVigilanciaCensusResponseRowsItemUrinaryCatheterDaysMin).multipleOf(transcribeVigilanciaCensusResponseRowsItemUrinaryCatheterDaysMultipleOf).nullable(),
   "nasogastricTubeDays": zod.number().min(transcribeVigilanciaCensusResponseRowsItemNasogastricTubeDaysMin).multipleOf(transcribeVigilanciaCensusResponseRowsItemNasogastricTubeDaysMultipleOf).nullable(),
   "centralLineDays": zod.number().min(transcribeVigilanciaCensusResponseRowsItemCentralLineDaysMin).multipleOf(transcribeVigilanciaCensusResponseRowsItemCentralLineDaysMultipleOf).nullable(),
+  "drainDays": zod.number().min(transcribeVigilanciaCensusResponseRowsItemDrainDaysMin).multipleOf(transcribeVigilanciaCensusResponseRowsItemDrainDaysMultipleOf).nullable(),
+  "dialysisCatheterDays": zod.number().min(transcribeVigilanciaCensusResponseRowsItemDialysisCatheterDaysMin).multipleOf(transcribeVigilanciaCensusResponseRowsItemDialysisCatheterDaysMultipleOf).nullable(),
   "cultureType": zod.enum(['none', 'urine', 'blood', 'respiratory', 'other']).nullable(),
   "cultureStatus": zod.enum(['pending', 'negative', 'positive']).nullable(),
   "cultureOrganism": zod.string().max(transcribeVigilanciaCensusResponseRowsItemCultureOrganismMax).nullable(),
   "culturePositiveDate": zod.string().regex(transcribeVigilanciaCensusResponseRowsItemCulturePositiveDateRegExp).nullable(),
-  "isolation": zod.enum(['none', 'respiratory', 'contact', 'droplets']).nullable(),
+  "isolation": zod.string().max(transcribeVigilanciaCensusResponseRowsItemIsolationMax).nullable(),
   "rectalSwabStatus": zod.enum(['pending', 'negative', 'positive']).nullable(),
   "rectalSwabOrganism": zod.string().max(transcribeVigilanciaCensusResponseRowsItemRectalSwabOrganismMax).nullable(),
   "rectalSwabPositiveDate": zod.string().regex(transcribeVigilanciaCensusResponseRowsItemRectalSwabPositiveDateRegExp).nullable(),
@@ -272,12 +289,20 @@ export const getVigilanciaBedRecordsResponseNasogastricTubeDaysMultipleOf = 1;
 export const getVigilanciaBedRecordsResponseCentralLineDaysMin = 0;
 export const getVigilanciaBedRecordsResponseCentralLineDaysMultipleOf = 1;
 
+export const getVigilanciaBedRecordsResponseDrainDaysMin = 0;
+export const getVigilanciaBedRecordsResponseDrainDaysMultipleOf = 1;
+
+export const getVigilanciaBedRecordsResponseDialysisCatheterDaysMin = 0;
+export const getVigilanciaBedRecordsResponseDialysisCatheterDaysMultipleOf = 1;
+
 export const getVigilanciaBedRecordsResponseCultureOrganismMax = 120;
 
 export const getVigilanciaBedRecordsResponseCulturePositiveDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
 export const getVigilanciaBedRecordsResponseRectalSwabOrganismMax = 120;
 
 export const getVigilanciaBedRecordsResponseRectalSwabPositiveDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const getVigilanciaBedRecordsResponseIsolationMax = 120;
+
 
 
 export const GetVigilanciaBedRecordsResponseItem = zod.object({
@@ -291,6 +316,8 @@ export const GetVigilanciaBedRecordsResponseItem = zod.object({
   "urinaryCatheterDays": zod.number().min(getVigilanciaBedRecordsResponseUrinaryCatheterDaysMin).multipleOf(getVigilanciaBedRecordsResponseUrinaryCatheterDaysMultipleOf).nullable(),
   "nasogastricTubeDays": zod.number().min(getVigilanciaBedRecordsResponseNasogastricTubeDaysMin).multipleOf(getVigilanciaBedRecordsResponseNasogastricTubeDaysMultipleOf).nullable(),
   "centralLineDays": zod.number().min(getVigilanciaBedRecordsResponseCentralLineDaysMin).multipleOf(getVigilanciaBedRecordsResponseCentralLineDaysMultipleOf).nullable(),
+  "drainDays": zod.number().min(getVigilanciaBedRecordsResponseDrainDaysMin).multipleOf(getVigilanciaBedRecordsResponseDrainDaysMultipleOf).nullable(),
+  "dialysisCatheterDays": zod.number().min(getVigilanciaBedRecordsResponseDialysisCatheterDaysMin).multipleOf(getVigilanciaBedRecordsResponseDialysisCatheterDaysMultipleOf).nullable(),
   "cultureType": zod.enum(['none', 'urine', 'blood', 'respiratory', 'other']),
   "cultureStatus": zod.enum(['pending', 'negative', 'positive']),
   "cultureOrganism": zod.string().max(getVigilanciaBedRecordsResponseCultureOrganismMax),
@@ -298,7 +325,7 @@ export const GetVigilanciaBedRecordsResponseItem = zod.object({
   "rectalSwabStatus": zod.enum(['pending', 'negative', 'positive']),
   "rectalSwabOrganism": zod.string().max(getVigilanciaBedRecordsResponseRectalSwabOrganismMax),
   "rectalSwabPositiveDate": zod.string().regex(getVigilanciaBedRecordsResponseRectalSwabPositiveDateRegExp).nullable(),
-  "isolation": zod.enum(['none', 'respiratory', 'contact', 'droplets']),
+  "isolation": zod.string().max(getVigilanciaBedRecordsResponseIsolationMax),
   "updatedAt": zod.string()
 })
 export const GetVigilanciaBedRecordsResponse = zod.array(GetVigilanciaBedRecordsResponseItem)
@@ -330,12 +357,20 @@ export const applyVigilanciaCensusBodyRowsItemNasogastricTubeDaysMultipleOf = 1;
 export const applyVigilanciaCensusBodyRowsItemCentralLineDaysMin = 0;
 export const applyVigilanciaCensusBodyRowsItemCentralLineDaysMultipleOf = 1;
 
+export const applyVigilanciaCensusBodyRowsItemDrainDaysMin = 0;
+export const applyVigilanciaCensusBodyRowsItemDrainDaysMultipleOf = 1;
+
+export const applyVigilanciaCensusBodyRowsItemDialysisCatheterDaysMin = 0;
+export const applyVigilanciaCensusBodyRowsItemDialysisCatheterDaysMultipleOf = 1;
+
 export const applyVigilanciaCensusBodyRowsItemCultureOrganismMax = 120;
 
 export const applyVigilanciaCensusBodyRowsItemCulturePositiveDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
 export const applyVigilanciaCensusBodyRowsItemRectalSwabOrganismMax = 120;
 
 export const applyVigilanciaCensusBodyRowsItemRectalSwabPositiveDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const applyVigilanciaCensusBodyRowsItemIsolationMax = 120;
+
 
 
 
@@ -351,6 +386,8 @@ export const ApplyVigilanciaCensusBody = zod.object({
   "urinaryCatheterDays": zod.number().min(applyVigilanciaCensusBodyRowsItemUrinaryCatheterDaysMin).multipleOf(applyVigilanciaCensusBodyRowsItemUrinaryCatheterDaysMultipleOf).nullable(),
   "nasogastricTubeDays": zod.number().min(applyVigilanciaCensusBodyRowsItemNasogastricTubeDaysMin).multipleOf(applyVigilanciaCensusBodyRowsItemNasogastricTubeDaysMultipleOf).nullable(),
   "centralLineDays": zod.number().min(applyVigilanciaCensusBodyRowsItemCentralLineDaysMin).multipleOf(applyVigilanciaCensusBodyRowsItemCentralLineDaysMultipleOf).nullable(),
+  "drainDays": zod.number().min(applyVigilanciaCensusBodyRowsItemDrainDaysMin).multipleOf(applyVigilanciaCensusBodyRowsItemDrainDaysMultipleOf).nullable(),
+  "dialysisCatheterDays": zod.number().min(applyVigilanciaCensusBodyRowsItemDialysisCatheterDaysMin).multipleOf(applyVigilanciaCensusBodyRowsItemDialysisCatheterDaysMultipleOf).nullable(),
   "cultureType": zod.enum(['none', 'urine', 'blood', 'respiratory', 'other']),
   "cultureStatus": zod.enum(['pending', 'negative', 'positive']),
   "cultureOrganism": zod.string().max(applyVigilanciaCensusBodyRowsItemCultureOrganismMax),
@@ -358,7 +395,7 @@ export const ApplyVigilanciaCensusBody = zod.object({
   "rectalSwabStatus": zod.enum(['pending', 'negative', 'positive']),
   "rectalSwabOrganism": zod.string().max(applyVigilanciaCensusBodyRowsItemRectalSwabOrganismMax),
   "rectalSwabPositiveDate": zod.string().regex(applyVigilanciaCensusBodyRowsItemRectalSwabPositiveDateRegExp).nullable(),
-  "isolation": zod.enum(['none', 'respiratory', 'contact', 'droplets'])
+  "isolation": zod.string().max(applyVigilanciaCensusBodyRowsItemIsolationMax).nullable()
 })).min(1)
 })
 
@@ -402,12 +439,20 @@ export const upsertVigilanciaBedRecordBodyNasogastricTubeDaysMultipleOf = 1;
 export const upsertVigilanciaBedRecordBodyCentralLineDaysMin = 0;
 export const upsertVigilanciaBedRecordBodyCentralLineDaysMultipleOf = 1;
 
+export const upsertVigilanciaBedRecordBodyDrainDaysMin = 0;
+export const upsertVigilanciaBedRecordBodyDrainDaysMultipleOf = 1;
+
+export const upsertVigilanciaBedRecordBodyDialysisCatheterDaysMin = 0;
+export const upsertVigilanciaBedRecordBodyDialysisCatheterDaysMultipleOf = 1;
+
 export const upsertVigilanciaBedRecordBodyCultureOrganismMax = 120;
 
 export const upsertVigilanciaBedRecordBodyCulturePositiveDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
 export const upsertVigilanciaBedRecordBodyRectalSwabOrganismMax = 120;
 
 export const upsertVigilanciaBedRecordBodyRectalSwabPositiveDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const upsertVigilanciaBedRecordBodyIsolationMax = 120;
+
 
 
 export const UpsertVigilanciaBedRecordBody = zod.object({
@@ -420,6 +465,8 @@ export const UpsertVigilanciaBedRecordBody = zod.object({
   "urinaryCatheterDays": zod.number().min(upsertVigilanciaBedRecordBodyUrinaryCatheterDaysMin).multipleOf(upsertVigilanciaBedRecordBodyUrinaryCatheterDaysMultipleOf).nullable(),
   "nasogastricTubeDays": zod.number().min(upsertVigilanciaBedRecordBodyNasogastricTubeDaysMin).multipleOf(upsertVigilanciaBedRecordBodyNasogastricTubeDaysMultipleOf).nullable(),
   "centralLineDays": zod.number().min(upsertVigilanciaBedRecordBodyCentralLineDaysMin).multipleOf(upsertVigilanciaBedRecordBodyCentralLineDaysMultipleOf).nullable(),
+  "drainDays": zod.number().min(upsertVigilanciaBedRecordBodyDrainDaysMin).multipleOf(upsertVigilanciaBedRecordBodyDrainDaysMultipleOf).nullable(),
+  "dialysisCatheterDays": zod.number().min(upsertVigilanciaBedRecordBodyDialysisCatheterDaysMin).multipleOf(upsertVigilanciaBedRecordBodyDialysisCatheterDaysMultipleOf).nullable(),
   "cultureType": zod.enum(['none', 'urine', 'blood', 'respiratory', 'other']),
   "cultureStatus": zod.enum(['pending', 'negative', 'positive']),
   "cultureOrganism": zod.string().max(upsertVigilanciaBedRecordBodyCultureOrganismMax),
@@ -427,7 +474,7 @@ export const UpsertVigilanciaBedRecordBody = zod.object({
   "rectalSwabStatus": zod.enum(['pending', 'negative', 'positive']),
   "rectalSwabOrganism": zod.string().max(upsertVigilanciaBedRecordBodyRectalSwabOrganismMax),
   "rectalSwabPositiveDate": zod.string().regex(upsertVigilanciaBedRecordBodyRectalSwabPositiveDateRegExp).nullish(),
-  "isolation": zod.enum(['none', 'respiratory', 'contact', 'droplets'])
+  "isolation": zod.string().max(upsertVigilanciaBedRecordBodyIsolationMax)
 })
 
 export const upsertVigilanciaBedRecordResponsePatientCodeMax = 20;
@@ -451,12 +498,20 @@ export const upsertVigilanciaBedRecordResponseNasogastricTubeDaysMultipleOf = 1;
 export const upsertVigilanciaBedRecordResponseCentralLineDaysMin = 0;
 export const upsertVigilanciaBedRecordResponseCentralLineDaysMultipleOf = 1;
 
+export const upsertVigilanciaBedRecordResponseDrainDaysMin = 0;
+export const upsertVigilanciaBedRecordResponseDrainDaysMultipleOf = 1;
+
+export const upsertVigilanciaBedRecordResponseDialysisCatheterDaysMin = 0;
+export const upsertVigilanciaBedRecordResponseDialysisCatheterDaysMultipleOf = 1;
+
 export const upsertVigilanciaBedRecordResponseCultureOrganismMax = 120;
 
 export const upsertVigilanciaBedRecordResponseCulturePositiveDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
 export const upsertVigilanciaBedRecordResponseRectalSwabOrganismMax = 120;
 
 export const upsertVigilanciaBedRecordResponseRectalSwabPositiveDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const upsertVigilanciaBedRecordResponseIsolationMax = 120;
+
 
 
 export const UpsertVigilanciaBedRecordResponse = zod.object({
@@ -470,6 +525,8 @@ export const UpsertVigilanciaBedRecordResponse = zod.object({
   "urinaryCatheterDays": zod.number().min(upsertVigilanciaBedRecordResponseUrinaryCatheterDaysMin).multipleOf(upsertVigilanciaBedRecordResponseUrinaryCatheterDaysMultipleOf).nullable(),
   "nasogastricTubeDays": zod.number().min(upsertVigilanciaBedRecordResponseNasogastricTubeDaysMin).multipleOf(upsertVigilanciaBedRecordResponseNasogastricTubeDaysMultipleOf).nullable(),
   "centralLineDays": zod.number().min(upsertVigilanciaBedRecordResponseCentralLineDaysMin).multipleOf(upsertVigilanciaBedRecordResponseCentralLineDaysMultipleOf).nullable(),
+  "drainDays": zod.number().min(upsertVigilanciaBedRecordResponseDrainDaysMin).multipleOf(upsertVigilanciaBedRecordResponseDrainDaysMultipleOf).nullable(),
+  "dialysisCatheterDays": zod.number().min(upsertVigilanciaBedRecordResponseDialysisCatheterDaysMin).multipleOf(upsertVigilanciaBedRecordResponseDialysisCatheterDaysMultipleOf).nullable(),
   "cultureType": zod.enum(['none', 'urine', 'blood', 'respiratory', 'other']),
   "cultureStatus": zod.enum(['pending', 'negative', 'positive']),
   "cultureOrganism": zod.string().max(upsertVigilanciaBedRecordResponseCultureOrganismMax),
@@ -477,7 +534,7 @@ export const UpsertVigilanciaBedRecordResponse = zod.object({
   "rectalSwabStatus": zod.enum(['pending', 'negative', 'positive']),
   "rectalSwabOrganism": zod.string().max(upsertVigilanciaBedRecordResponseRectalSwabOrganismMax),
   "rectalSwabPositiveDate": zod.string().regex(upsertVigilanciaBedRecordResponseRectalSwabPositiveDateRegExp).nullable(),
-  "isolation": zod.enum(['none', 'respiratory', 'contact', 'droplets']),
+  "isolation": zod.string().max(upsertVigilanciaBedRecordResponseIsolationMax),
   "updatedAt": zod.string()
 })
 

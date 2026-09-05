@@ -286,16 +286,6 @@ export const VigilanciaBedRecordRectalSwabStatus = {
   positive: 'positive',
 } as const;
 
-export type VigilanciaBedRecordIsolation = typeof VigilanciaBedRecordIsolation[keyof typeof VigilanciaBedRecordIsolation];
-
-
-export const VigilanciaBedRecordIsolation = {
-  none: 'none',
-  respiratory: 'respiratory',
-  contact: 'contact',
-  droplets: 'droplets',
-} as const;
-
 export interface VigilanciaBedRecord {
   bedId: string;
   occupied: boolean;
@@ -333,6 +323,16 @@ export interface VigilanciaBedRecord {
      * @nullable
      */
   centralLineDays: number | null;
+  /**
+     * @minimum 0
+     * @nullable
+     */
+  drainDays: number | null;
+  /**
+     * @minimum 0
+     * @nullable
+     */
+  dialysisCatheterDays: number | null;
   cultureType: VigilanciaBedRecordCultureType;
   cultureStatus: VigilanciaBedRecordCultureStatus;
   /** @maxLength 120 */
@@ -350,7 +350,8 @@ export interface VigilanciaBedRecord {
      * @pattern ^\d{4}-\d{2}-\d{2}$
      */
   rectalSwabPositiveDate: string | null;
-  isolation: VigilanciaBedRecordIsolation;
+  /** @maxLength 120 */
+  isolation: string;
   updatedAt: string;
 }
 
@@ -381,16 +382,6 @@ export const VigilanciaBedRecordInputRectalSwabStatus = {
   pending: 'pending',
   negative: 'negative',
   positive: 'positive',
-} as const;
-
-export type VigilanciaBedRecordInputIsolation = typeof VigilanciaBedRecordInputIsolation[keyof typeof VigilanciaBedRecordInputIsolation];
-
-
-export const VigilanciaBedRecordInputIsolation = {
-  none: 'none',
-  respiratory: 'respiratory',
-  contact: 'contact',
-  droplets: 'droplets',
 } as const;
 
 export interface VigilanciaBedRecordInput {
@@ -429,6 +420,16 @@ export interface VigilanciaBedRecordInput {
      * @nullable
      */
   centralLineDays: number | null;
+  /**
+     * @minimum 0
+     * @nullable
+     */
+  drainDays: number | null;
+  /**
+     * @minimum 0
+     * @nullable
+     */
+  dialysisCatheterDays: number | null;
   cultureType: VigilanciaBedRecordInputCultureType;
   cultureStatus: VigilanciaBedRecordInputCultureStatus;
   /** @maxLength 120 */
@@ -446,7 +447,8 @@ export interface VigilanciaBedRecordInput {
      * @pattern ^\d{4}-\d{2}-\d{2}$
      */
   rectalSwabPositiveDate?: string | null;
-  isolation: VigilanciaBedRecordInputIsolation;
+  /** @maxLength 120 */
+  isolation: string;
 }
 
 export type VigilanciaCensusRowInputCultureType = typeof VigilanciaCensusRowInputCultureType[keyof typeof VigilanciaCensusRowInputCultureType];
@@ -476,16 +478,6 @@ export const VigilanciaCensusRowInputRectalSwabStatus = {
   pending: 'pending',
   negative: 'negative',
   positive: 'positive',
-} as const;
-
-export type VigilanciaCensusRowInputIsolation = typeof VigilanciaCensusRowInputIsolation[keyof typeof VigilanciaCensusRowInputIsolation];
-
-
-export const VigilanciaCensusRowInputIsolation = {
-  none: 'none',
-  respiratory: 'respiratory',
-  contact: 'contact',
-  droplets: 'droplets',
 } as const;
 
 export interface VigilanciaCensusRowInput {
@@ -526,6 +518,16 @@ export interface VigilanciaCensusRowInput {
      * @nullable
      */
   centralLineDays: number | null;
+  /**
+     * @minimum 0
+     * @nullable
+     */
+  drainDays: number | null;
+  /**
+     * @minimum 0
+     * @nullable
+     */
+  dialysisCatheterDays: number | null;
   cultureType: VigilanciaCensusRowInputCultureType;
   cultureStatus: VigilanciaCensusRowInputCultureStatus;
   /** @maxLength 120 */
@@ -543,7 +545,11 @@ export interface VigilanciaCensusRowInput {
      * @pattern ^\d{4}-\d{2}-\d{2}$
      */
   rectalSwabPositiveDate: string | null;
-  isolation: VigilanciaCensusRowInputIsolation;
+  /**
+     * @maxLength 120
+     * @nullable
+     */
+  isolation: string | null;
 }
 
 export interface VigilanciaCensusApplyInput {
@@ -601,19 +607,6 @@ export const VigilanciaTranscriptionRowCultureStatus = {
 /**
  * @nullable
  */
-export type VigilanciaTranscriptionRowIsolation = typeof VigilanciaTranscriptionRowIsolation[keyof typeof VigilanciaTranscriptionRowIsolation] | null;
-
-
-export const VigilanciaTranscriptionRowIsolation = {
-  none: 'none',
-  respiratory: 'respiratory',
-  contact: 'contact',
-  droplets: 'droplets',
-} as const;
-
-/**
- * @nullable
- */
 export type VigilanciaTranscriptionRowRectalSwabStatus = typeof VigilanciaTranscriptionRowRectalSwabStatus[keyof typeof VigilanciaTranscriptionRowRectalSwabStatus] | null;
 
 
@@ -643,6 +636,16 @@ export interface VigilanciaTranscriptionRow {
      */
   patientCode: string | null;
   /**
+     * @minimum 0
+     * @nullable
+     */
+  age: number | null;
+  /**
+     * @maxLength 120
+     * @nullable
+     */
+  affiliation: string | null;
+  /**
      * @maxLength 160
      * @nullable
      */
@@ -667,6 +670,16 @@ export interface VigilanciaTranscriptionRow {
      * @nullable
      */
   centralLineDays: number | null;
+  /**
+     * @minimum 0
+     * @nullable
+     */
+  drainDays: number | null;
+  /**
+     * @minimum 0
+     * @nullable
+     */
+  dialysisCatheterDays: number | null;
   /** @nullable */
   cultureType: VigilanciaTranscriptionRowCultureType;
   /** @nullable */
@@ -681,8 +694,11 @@ export interface VigilanciaTranscriptionRow {
      * @pattern ^\d{4}-\d{2}-\d{2}$
      */
   culturePositiveDate: string | null;
-  /** @nullable */
-  isolation: VigilanciaTranscriptionRowIsolation;
+  /**
+     * @maxLength 120
+     * @nullable
+     */
+  isolation: string | null;
   /** @nullable */
   rectalSwabStatus: VigilanciaTranscriptionRowRectalSwabStatus;
   /**

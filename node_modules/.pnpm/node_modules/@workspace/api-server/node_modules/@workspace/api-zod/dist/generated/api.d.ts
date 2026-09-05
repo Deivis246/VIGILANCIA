@@ -497,6 +497,9 @@ export declare const TranscribeVigilanciaCensusBody: zod.ZodObject<{
     mimeType: "image/jpeg" | "image/png" | "image/webp" | "application/pdf";
 }>;
 export declare const transcribeVigilanciaCensusResponseRowsItemPatientCodeMax = 20;
+export declare const transcribeVigilanciaCensusResponseRowsItemAgeMin = 0;
+export declare const transcribeVigilanciaCensusResponseRowsItemAgeMultipleOf = 1;
+export declare const transcribeVigilanciaCensusResponseRowsItemAffiliationMax = 120;
 export declare const transcribeVigilanciaCensusResponseRowsItemDiagnosisMax = 160;
 export declare const transcribeVigilanciaCensusResponseRowsItemStayDaysMin = 0;
 export declare const transcribeVigilanciaCensusResponseRowsItemStayDaysMultipleOf = 1;
@@ -506,8 +509,13 @@ export declare const transcribeVigilanciaCensusResponseRowsItemNasogastricTubeDa
 export declare const transcribeVigilanciaCensusResponseRowsItemNasogastricTubeDaysMultipleOf = 1;
 export declare const transcribeVigilanciaCensusResponseRowsItemCentralLineDaysMin = 0;
 export declare const transcribeVigilanciaCensusResponseRowsItemCentralLineDaysMultipleOf = 1;
+export declare const transcribeVigilanciaCensusResponseRowsItemDrainDaysMin = 0;
+export declare const transcribeVigilanciaCensusResponseRowsItemDrainDaysMultipleOf = 1;
+export declare const transcribeVigilanciaCensusResponseRowsItemDialysisCatheterDaysMin = 0;
+export declare const transcribeVigilanciaCensusResponseRowsItemDialysisCatheterDaysMultipleOf = 1;
 export declare const transcribeVigilanciaCensusResponseRowsItemCultureOrganismMax = 120;
 export declare const transcribeVigilanciaCensusResponseRowsItemCulturePositiveDateRegExp: RegExp;
+export declare const transcribeVigilanciaCensusResponseRowsItemIsolationMax = 120;
 export declare const transcribeVigilanciaCensusResponseRowsItemRectalSwabOrganismMax = 120;
 export declare const transcribeVigilanciaCensusResponseRowsItemRectalSwabPositiveDateRegExp: RegExp;
 export declare const transcribeVigilanciaCensusResponseRowsItemWarningsItemMax = 240;
@@ -518,16 +526,20 @@ export declare const TranscribeVigilanciaCensusResponse: zod.ZodObject<{
         bedId: zod.ZodNullable<zod.ZodString>;
         occupied: zod.ZodNullable<zod.ZodBoolean>;
         patientCode: zod.ZodNullable<zod.ZodString>;
+        age: zod.ZodNullable<zod.ZodNumber>;
+        affiliation: zod.ZodNullable<zod.ZodString>;
         diagnosis: zod.ZodNullable<zod.ZodString>;
         stayDays: zod.ZodNullable<zod.ZodNumber>;
         urinaryCatheterDays: zod.ZodNullable<zod.ZodNumber>;
         nasogastricTubeDays: zod.ZodNullable<zod.ZodNumber>;
         centralLineDays: zod.ZodNullable<zod.ZodNumber>;
+        drainDays: zod.ZodNullable<zod.ZodNumber>;
+        dialysisCatheterDays: zod.ZodNullable<zod.ZodNumber>;
         cultureType: zod.ZodNullable<zod.ZodEnum<["none", "urine", "blood", "respiratory", "other"]>>;
         cultureStatus: zod.ZodNullable<zod.ZodEnum<["pending", "negative", "positive"]>>;
         cultureOrganism: zod.ZodNullable<zod.ZodString>;
         culturePositiveDate: zod.ZodNullable<zod.ZodString>;
-        isolation: zod.ZodNullable<zod.ZodEnum<["none", "respiratory", "contact", "droplets"]>>;
+        isolation: zod.ZodNullable<zod.ZodString>;
         rectalSwabStatus: zod.ZodNullable<zod.ZodEnum<["pending", "negative", "positive"]>>;
         rectalSwabOrganism: zod.ZodNullable<zod.ZodString>;
         rectalSwabPositiveDate: zod.ZodNullable<zod.ZodString>;
@@ -535,7 +547,7 @@ export declare const TranscribeVigilanciaCensusResponse: zod.ZodObject<{
         warnings: zod.ZodArray<zod.ZodString, "many">;
     }, "strip", zod.ZodTypeAny, {
         patientCode: string | null;
-        isolation: "none" | "respiratory" | "contact" | "droplets" | null;
+        isolation: string | null;
         urinaryCatheterDays: number | null;
         nasogastricTubeDays: number | null;
         centralLineDays: number | null;
@@ -546,15 +558,19 @@ export declare const TranscribeVigilanciaCensusResponse: zod.ZodObject<{
         rectalSwabOrganism: string | null;
         bedId: string | null;
         occupied: boolean | null;
+        age: number | null;
+        affiliation: string | null;
         diagnosis: string | null;
         stayDays: number | null;
+        drainDays: number | null;
+        dialysisCatheterDays: number | null;
         culturePositiveDate: string | null;
         rectalSwabPositiveDate: string | null;
         confidence: "low" | "high" | "medium";
         warnings: string[];
     }, {
         patientCode: string | null;
-        isolation: "none" | "respiratory" | "contact" | "droplets" | null;
+        isolation: string | null;
         urinaryCatheterDays: number | null;
         nasogastricTubeDays: number | null;
         centralLineDays: number | null;
@@ -565,8 +581,12 @@ export declare const TranscribeVigilanciaCensusResponse: zod.ZodObject<{
         rectalSwabOrganism: string | null;
         bedId: string | null;
         occupied: boolean | null;
+        age: number | null;
+        affiliation: string | null;
         diagnosis: string | null;
         stayDays: number | null;
+        drainDays: number | null;
+        dialysisCatheterDays: number | null;
         culturePositiveDate: string | null;
         rectalSwabPositiveDate: string | null;
         confidence: "low" | "high" | "medium";
@@ -591,7 +611,7 @@ export declare const TranscribeVigilanciaCensusResponse: zod.ZodObject<{
     warnings: string[];
     rows: {
         patientCode: string | null;
-        isolation: "none" | "respiratory" | "contact" | "droplets" | null;
+        isolation: string | null;
         urinaryCatheterDays: number | null;
         nasogastricTubeDays: number | null;
         centralLineDays: number | null;
@@ -602,8 +622,12 @@ export declare const TranscribeVigilanciaCensusResponse: zod.ZodObject<{
         rectalSwabOrganism: string | null;
         bedId: string | null;
         occupied: boolean | null;
+        age: number | null;
+        affiliation: string | null;
         diagnosis: string | null;
         stayDays: number | null;
+        drainDays: number | null;
+        dialysisCatheterDays: number | null;
         culturePositiveDate: string | null;
         rectalSwabPositiveDate: string | null;
         confidence: "low" | "high" | "medium";
@@ -619,7 +643,7 @@ export declare const TranscribeVigilanciaCensusResponse: zod.ZodObject<{
     warnings: string[];
     rows: {
         patientCode: string | null;
-        isolation: "none" | "respiratory" | "contact" | "droplets" | null;
+        isolation: string | null;
         urinaryCatheterDays: number | null;
         nasogastricTubeDays: number | null;
         centralLineDays: number | null;
@@ -630,8 +654,12 @@ export declare const TranscribeVigilanciaCensusResponse: zod.ZodObject<{
         rectalSwabOrganism: string | null;
         bedId: string | null;
         occupied: boolean | null;
+        age: number | null;
+        affiliation: string | null;
         diagnosis: string | null;
         stayDays: number | null;
+        drainDays: number | null;
+        dialysisCatheterDays: number | null;
         culturePositiveDate: string | null;
         rectalSwabPositiveDate: string | null;
         confidence: "low" | "high" | "medium";
@@ -660,10 +688,15 @@ export declare const getVigilanciaBedRecordsResponseNasogastricTubeDaysMin = 0;
 export declare const getVigilanciaBedRecordsResponseNasogastricTubeDaysMultipleOf = 1;
 export declare const getVigilanciaBedRecordsResponseCentralLineDaysMin = 0;
 export declare const getVigilanciaBedRecordsResponseCentralLineDaysMultipleOf = 1;
+export declare const getVigilanciaBedRecordsResponseDrainDaysMin = 0;
+export declare const getVigilanciaBedRecordsResponseDrainDaysMultipleOf = 1;
+export declare const getVigilanciaBedRecordsResponseDialysisCatheterDaysMin = 0;
+export declare const getVigilanciaBedRecordsResponseDialysisCatheterDaysMultipleOf = 1;
 export declare const getVigilanciaBedRecordsResponseCultureOrganismMax = 120;
 export declare const getVigilanciaBedRecordsResponseCulturePositiveDateRegExp: RegExp;
 export declare const getVigilanciaBedRecordsResponseRectalSwabOrganismMax = 120;
 export declare const getVigilanciaBedRecordsResponseRectalSwabPositiveDateRegExp: RegExp;
+export declare const getVigilanciaBedRecordsResponseIsolationMax = 120;
 export declare const GetVigilanciaBedRecordsResponseItem: zod.ZodObject<{
     bedId: zod.ZodString;
     occupied: zod.ZodBoolean;
@@ -675,6 +708,8 @@ export declare const GetVigilanciaBedRecordsResponseItem: zod.ZodObject<{
     urinaryCatheterDays: zod.ZodNullable<zod.ZodNumber>;
     nasogastricTubeDays: zod.ZodNullable<zod.ZodNumber>;
     centralLineDays: zod.ZodNullable<zod.ZodNumber>;
+    drainDays: zod.ZodNullable<zod.ZodNumber>;
+    dialysisCatheterDays: zod.ZodNullable<zod.ZodNumber>;
     cultureType: zod.ZodEnum<["none", "urine", "blood", "respiratory", "other"]>;
     cultureStatus: zod.ZodEnum<["pending", "negative", "positive"]>;
     cultureOrganism: zod.ZodString;
@@ -682,11 +717,11 @@ export declare const GetVigilanciaBedRecordsResponseItem: zod.ZodObject<{
     rectalSwabStatus: zod.ZodEnum<["pending", "negative", "positive"]>;
     rectalSwabOrganism: zod.ZodString;
     rectalSwabPositiveDate: zod.ZodNullable<zod.ZodString>;
-    isolation: zod.ZodEnum<["none", "respiratory", "contact", "droplets"]>;
+    isolation: zod.ZodString;
     updatedAt: zod.ZodString;
 }, "strip", zod.ZodTypeAny, {
     patientCode: string;
-    isolation: "none" | "respiratory" | "contact" | "droplets";
+    isolation: string;
     urinaryCatheterDays: number | null;
     nasogastricTubeDays: number | null;
     centralLineDays: number | null;
@@ -697,16 +732,18 @@ export declare const GetVigilanciaBedRecordsResponseItem: zod.ZodObject<{
     rectalSwabOrganism: string;
     bedId: string;
     occupied: boolean;
-    diagnosis: string;
-    stayDays: number | null;
-    culturePositiveDate: string | null;
-    rectalSwabPositiveDate: string | null;
     age: number | null;
     affiliation: string | null;
+    diagnosis: string;
+    stayDays: number | null;
+    drainDays: number | null;
+    dialysisCatheterDays: number | null;
+    culturePositiveDate: string | null;
+    rectalSwabPositiveDate: string | null;
     updatedAt: string;
 }, {
     patientCode: string;
-    isolation: "none" | "respiratory" | "contact" | "droplets";
+    isolation: string;
     urinaryCatheterDays: number | null;
     nasogastricTubeDays: number | null;
     centralLineDays: number | null;
@@ -717,12 +754,14 @@ export declare const GetVigilanciaBedRecordsResponseItem: zod.ZodObject<{
     rectalSwabOrganism: string;
     bedId: string;
     occupied: boolean;
-    diagnosis: string;
-    stayDays: number | null;
-    culturePositiveDate: string | null;
-    rectalSwabPositiveDate: string | null;
     age: number | null;
     affiliation: string | null;
+    diagnosis: string;
+    stayDays: number | null;
+    drainDays: number | null;
+    dialysisCatheterDays: number | null;
+    culturePositiveDate: string | null;
+    rectalSwabPositiveDate: string | null;
     updatedAt: string;
 }>;
 export declare const GetVigilanciaBedRecordsResponse: zod.ZodArray<zod.ZodObject<{
@@ -736,6 +775,8 @@ export declare const GetVigilanciaBedRecordsResponse: zod.ZodArray<zod.ZodObject
     urinaryCatheterDays: zod.ZodNullable<zod.ZodNumber>;
     nasogastricTubeDays: zod.ZodNullable<zod.ZodNumber>;
     centralLineDays: zod.ZodNullable<zod.ZodNumber>;
+    drainDays: zod.ZodNullable<zod.ZodNumber>;
+    dialysisCatheterDays: zod.ZodNullable<zod.ZodNumber>;
     cultureType: zod.ZodEnum<["none", "urine", "blood", "respiratory", "other"]>;
     cultureStatus: zod.ZodEnum<["pending", "negative", "positive"]>;
     cultureOrganism: zod.ZodString;
@@ -743,11 +784,11 @@ export declare const GetVigilanciaBedRecordsResponse: zod.ZodArray<zod.ZodObject
     rectalSwabStatus: zod.ZodEnum<["pending", "negative", "positive"]>;
     rectalSwabOrganism: zod.ZodString;
     rectalSwabPositiveDate: zod.ZodNullable<zod.ZodString>;
-    isolation: zod.ZodEnum<["none", "respiratory", "contact", "droplets"]>;
+    isolation: zod.ZodString;
     updatedAt: zod.ZodString;
 }, "strip", zod.ZodTypeAny, {
     patientCode: string;
-    isolation: "none" | "respiratory" | "contact" | "droplets";
+    isolation: string;
     urinaryCatheterDays: number | null;
     nasogastricTubeDays: number | null;
     centralLineDays: number | null;
@@ -758,16 +799,18 @@ export declare const GetVigilanciaBedRecordsResponse: zod.ZodArray<zod.ZodObject
     rectalSwabOrganism: string;
     bedId: string;
     occupied: boolean;
-    diagnosis: string;
-    stayDays: number | null;
-    culturePositiveDate: string | null;
-    rectalSwabPositiveDate: string | null;
     age: number | null;
     affiliation: string | null;
+    diagnosis: string;
+    stayDays: number | null;
+    drainDays: number | null;
+    dialysisCatheterDays: number | null;
+    culturePositiveDate: string | null;
+    rectalSwabPositiveDate: string | null;
     updatedAt: string;
 }, {
     patientCode: string;
-    isolation: "none" | "respiratory" | "contact" | "droplets";
+    isolation: string;
     urinaryCatheterDays: number | null;
     nasogastricTubeDays: number | null;
     centralLineDays: number | null;
@@ -778,12 +821,14 @@ export declare const GetVigilanciaBedRecordsResponse: zod.ZodArray<zod.ZodObject
     rectalSwabOrganism: string;
     bedId: string;
     occupied: boolean;
-    diagnosis: string;
-    stayDays: number | null;
-    culturePositiveDate: string | null;
-    rectalSwabPositiveDate: string | null;
     age: number | null;
     affiliation: string | null;
+    diagnosis: string;
+    stayDays: number | null;
+    drainDays: number | null;
+    dialysisCatheterDays: number | null;
+    culturePositiveDate: string | null;
+    rectalSwabPositiveDate: string | null;
     updatedAt: string;
 }>, "many">;
 /**
@@ -804,10 +849,15 @@ export declare const applyVigilanciaCensusBodyRowsItemNasogastricTubeDaysMin = 0
 export declare const applyVigilanciaCensusBodyRowsItemNasogastricTubeDaysMultipleOf = 1;
 export declare const applyVigilanciaCensusBodyRowsItemCentralLineDaysMin = 0;
 export declare const applyVigilanciaCensusBodyRowsItemCentralLineDaysMultipleOf = 1;
+export declare const applyVigilanciaCensusBodyRowsItemDrainDaysMin = 0;
+export declare const applyVigilanciaCensusBodyRowsItemDrainDaysMultipleOf = 1;
+export declare const applyVigilanciaCensusBodyRowsItemDialysisCatheterDaysMin = 0;
+export declare const applyVigilanciaCensusBodyRowsItemDialysisCatheterDaysMultipleOf = 1;
 export declare const applyVigilanciaCensusBodyRowsItemCultureOrganismMax = 120;
 export declare const applyVigilanciaCensusBodyRowsItemCulturePositiveDateRegExp: RegExp;
 export declare const applyVigilanciaCensusBodyRowsItemRectalSwabOrganismMax = 120;
 export declare const applyVigilanciaCensusBodyRowsItemRectalSwabPositiveDateRegExp: RegExp;
+export declare const applyVigilanciaCensusBodyRowsItemIsolationMax = 120;
 export declare const ApplyVigilanciaCensusBody: zod.ZodObject<{
     rows: zod.ZodArray<zod.ZodObject<{
         bedId: zod.ZodString;
@@ -820,6 +870,8 @@ export declare const ApplyVigilanciaCensusBody: zod.ZodObject<{
         urinaryCatheterDays: zod.ZodNullable<zod.ZodNumber>;
         nasogastricTubeDays: zod.ZodNullable<zod.ZodNumber>;
         centralLineDays: zod.ZodNullable<zod.ZodNumber>;
+        drainDays: zod.ZodNullable<zod.ZodNumber>;
+        dialysisCatheterDays: zod.ZodNullable<zod.ZodNumber>;
         cultureType: zod.ZodEnum<["none", "urine", "blood", "respiratory", "other"]>;
         cultureStatus: zod.ZodEnum<["pending", "negative", "positive"]>;
         cultureOrganism: zod.ZodString;
@@ -827,10 +879,10 @@ export declare const ApplyVigilanciaCensusBody: zod.ZodObject<{
         rectalSwabStatus: zod.ZodEnum<["pending", "negative", "positive"]>;
         rectalSwabOrganism: zod.ZodString;
         rectalSwabPositiveDate: zod.ZodNullable<zod.ZodString>;
-        isolation: zod.ZodEnum<["none", "respiratory", "contact", "droplets"]>;
+        isolation: zod.ZodNullable<zod.ZodString>;
     }, "strip", zod.ZodTypeAny, {
         patientCode: string;
-        isolation: "none" | "respiratory" | "contact" | "droplets";
+        isolation: string | null;
         urinaryCatheterDays: number | null;
         nasogastricTubeDays: number | null;
         centralLineDays: number | null;
@@ -841,15 +893,17 @@ export declare const ApplyVigilanciaCensusBody: zod.ZodObject<{
         rectalSwabOrganism: string;
         bedId: string;
         occupied: boolean;
-        diagnosis: string;
-        stayDays: number | null;
-        culturePositiveDate: string | null;
-        rectalSwabPositiveDate: string | null;
         age: number | null;
         affiliation: string | null;
+        diagnosis: string;
+        stayDays: number | null;
+        drainDays: number | null;
+        dialysisCatheterDays: number | null;
+        culturePositiveDate: string | null;
+        rectalSwabPositiveDate: string | null;
     }, {
         patientCode: string;
-        isolation: "none" | "respiratory" | "contact" | "droplets";
+        isolation: string | null;
         urinaryCatheterDays: number | null;
         nasogastricTubeDays: number | null;
         centralLineDays: number | null;
@@ -860,17 +914,19 @@ export declare const ApplyVigilanciaCensusBody: zod.ZodObject<{
         rectalSwabOrganism: string;
         bedId: string;
         occupied: boolean;
-        diagnosis: string;
-        stayDays: number | null;
-        culturePositiveDate: string | null;
-        rectalSwabPositiveDate: string | null;
         age: number | null;
         affiliation: string | null;
+        diagnosis: string;
+        stayDays: number | null;
+        drainDays: number | null;
+        dialysisCatheterDays: number | null;
+        culturePositiveDate: string | null;
+        rectalSwabPositiveDate: string | null;
     }>, "many">;
 }, "strip", zod.ZodTypeAny, {
     rows: {
         patientCode: string;
-        isolation: "none" | "respiratory" | "contact" | "droplets";
+        isolation: string | null;
         urinaryCatheterDays: number | null;
         nasogastricTubeDays: number | null;
         centralLineDays: number | null;
@@ -881,17 +937,19 @@ export declare const ApplyVigilanciaCensusBody: zod.ZodObject<{
         rectalSwabOrganism: string;
         bedId: string;
         occupied: boolean;
-        diagnosis: string;
-        stayDays: number | null;
-        culturePositiveDate: string | null;
-        rectalSwabPositiveDate: string | null;
         age: number | null;
         affiliation: string | null;
+        diagnosis: string;
+        stayDays: number | null;
+        drainDays: number | null;
+        dialysisCatheterDays: number | null;
+        culturePositiveDate: string | null;
+        rectalSwabPositiveDate: string | null;
     }[];
 }, {
     rows: {
         patientCode: string;
-        isolation: "none" | "respiratory" | "contact" | "droplets";
+        isolation: string | null;
         urinaryCatheterDays: number | null;
         nasogastricTubeDays: number | null;
         centralLineDays: number | null;
@@ -902,12 +960,14 @@ export declare const ApplyVigilanciaCensusBody: zod.ZodObject<{
         rectalSwabOrganism: string;
         bedId: string;
         occupied: boolean;
-        diagnosis: string;
-        stayDays: number | null;
-        culturePositiveDate: string | null;
-        rectalSwabPositiveDate: string | null;
         age: number | null;
         affiliation: string | null;
+        diagnosis: string;
+        stayDays: number | null;
+        drainDays: number | null;
+        dialysisCatheterDays: number | null;
+        culturePositiveDate: string | null;
+        rectalSwabPositiveDate: string | null;
     }[];
 }>;
 export declare const applyVigilanciaCensusResponseAppliedCountMultipleOf = 1;
@@ -942,10 +1002,15 @@ export declare const upsertVigilanciaBedRecordBodyNasogastricTubeDaysMin = 0;
 export declare const upsertVigilanciaBedRecordBodyNasogastricTubeDaysMultipleOf = 1;
 export declare const upsertVigilanciaBedRecordBodyCentralLineDaysMin = 0;
 export declare const upsertVigilanciaBedRecordBodyCentralLineDaysMultipleOf = 1;
+export declare const upsertVigilanciaBedRecordBodyDrainDaysMin = 0;
+export declare const upsertVigilanciaBedRecordBodyDrainDaysMultipleOf = 1;
+export declare const upsertVigilanciaBedRecordBodyDialysisCatheterDaysMin = 0;
+export declare const upsertVigilanciaBedRecordBodyDialysisCatheterDaysMultipleOf = 1;
 export declare const upsertVigilanciaBedRecordBodyCultureOrganismMax = 120;
 export declare const upsertVigilanciaBedRecordBodyCulturePositiveDateRegExp: RegExp;
 export declare const upsertVigilanciaBedRecordBodyRectalSwabOrganismMax = 120;
 export declare const upsertVigilanciaBedRecordBodyRectalSwabPositiveDateRegExp: RegExp;
+export declare const upsertVigilanciaBedRecordBodyIsolationMax = 120;
 export declare const UpsertVigilanciaBedRecordBody: zod.ZodObject<{
     occupied: zod.ZodBoolean;
     patientCode: zod.ZodString;
@@ -956,6 +1021,8 @@ export declare const UpsertVigilanciaBedRecordBody: zod.ZodObject<{
     urinaryCatheterDays: zod.ZodNullable<zod.ZodNumber>;
     nasogastricTubeDays: zod.ZodNullable<zod.ZodNumber>;
     centralLineDays: zod.ZodNullable<zod.ZodNumber>;
+    drainDays: zod.ZodNullable<zod.ZodNumber>;
+    dialysisCatheterDays: zod.ZodNullable<zod.ZodNumber>;
     cultureType: zod.ZodEnum<["none", "urine", "blood", "respiratory", "other"]>;
     cultureStatus: zod.ZodEnum<["pending", "negative", "positive"]>;
     cultureOrganism: zod.ZodString;
@@ -963,10 +1030,10 @@ export declare const UpsertVigilanciaBedRecordBody: zod.ZodObject<{
     rectalSwabStatus: zod.ZodEnum<["pending", "negative", "positive"]>;
     rectalSwabOrganism: zod.ZodString;
     rectalSwabPositiveDate: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
-    isolation: zod.ZodEnum<["none", "respiratory", "contact", "droplets"]>;
+    isolation: zod.ZodString;
 }, "strip", zod.ZodTypeAny, {
     patientCode: string;
-    isolation: "none" | "respiratory" | "contact" | "droplets";
+    isolation: string;
     urinaryCatheterDays: number | null;
     nasogastricTubeDays: number | null;
     centralLineDays: number | null;
@@ -976,15 +1043,17 @@ export declare const UpsertVigilanciaBedRecordBody: zod.ZodObject<{
     rectalSwabStatus: "pending" | "negative" | "positive";
     rectalSwabOrganism: string;
     occupied: boolean;
-    diagnosis: string;
-    stayDays: number | null;
     age: number | null;
     affiliation: string | null;
+    diagnosis: string;
+    stayDays: number | null;
+    drainDays: number | null;
+    dialysisCatheterDays: number | null;
     culturePositiveDate?: string | null | undefined;
     rectalSwabPositiveDate?: string | null | undefined;
 }, {
     patientCode: string;
-    isolation: "none" | "respiratory" | "contact" | "droplets";
+    isolation: string;
     urinaryCatheterDays: number | null;
     nasogastricTubeDays: number | null;
     centralLineDays: number | null;
@@ -994,10 +1063,12 @@ export declare const UpsertVigilanciaBedRecordBody: zod.ZodObject<{
     rectalSwabStatus: "pending" | "negative" | "positive";
     rectalSwabOrganism: string;
     occupied: boolean;
-    diagnosis: string;
-    stayDays: number | null;
     age: number | null;
     affiliation: string | null;
+    diagnosis: string;
+    stayDays: number | null;
+    drainDays: number | null;
+    dialysisCatheterDays: number | null;
     culturePositiveDate?: string | null | undefined;
     rectalSwabPositiveDate?: string | null | undefined;
 }>;
@@ -1014,10 +1085,15 @@ export declare const upsertVigilanciaBedRecordResponseNasogastricTubeDaysMin = 0
 export declare const upsertVigilanciaBedRecordResponseNasogastricTubeDaysMultipleOf = 1;
 export declare const upsertVigilanciaBedRecordResponseCentralLineDaysMin = 0;
 export declare const upsertVigilanciaBedRecordResponseCentralLineDaysMultipleOf = 1;
+export declare const upsertVigilanciaBedRecordResponseDrainDaysMin = 0;
+export declare const upsertVigilanciaBedRecordResponseDrainDaysMultipleOf = 1;
+export declare const upsertVigilanciaBedRecordResponseDialysisCatheterDaysMin = 0;
+export declare const upsertVigilanciaBedRecordResponseDialysisCatheterDaysMultipleOf = 1;
 export declare const upsertVigilanciaBedRecordResponseCultureOrganismMax = 120;
 export declare const upsertVigilanciaBedRecordResponseCulturePositiveDateRegExp: RegExp;
 export declare const upsertVigilanciaBedRecordResponseRectalSwabOrganismMax = 120;
 export declare const upsertVigilanciaBedRecordResponseRectalSwabPositiveDateRegExp: RegExp;
+export declare const upsertVigilanciaBedRecordResponseIsolationMax = 120;
 export declare const UpsertVigilanciaBedRecordResponse: zod.ZodObject<{
     bedId: zod.ZodString;
     occupied: zod.ZodBoolean;
@@ -1029,6 +1105,8 @@ export declare const UpsertVigilanciaBedRecordResponse: zod.ZodObject<{
     urinaryCatheterDays: zod.ZodNullable<zod.ZodNumber>;
     nasogastricTubeDays: zod.ZodNullable<zod.ZodNumber>;
     centralLineDays: zod.ZodNullable<zod.ZodNumber>;
+    drainDays: zod.ZodNullable<zod.ZodNumber>;
+    dialysisCatheterDays: zod.ZodNullable<zod.ZodNumber>;
     cultureType: zod.ZodEnum<["none", "urine", "blood", "respiratory", "other"]>;
     cultureStatus: zod.ZodEnum<["pending", "negative", "positive"]>;
     cultureOrganism: zod.ZodString;
@@ -1036,11 +1114,11 @@ export declare const UpsertVigilanciaBedRecordResponse: zod.ZodObject<{
     rectalSwabStatus: zod.ZodEnum<["pending", "negative", "positive"]>;
     rectalSwabOrganism: zod.ZodString;
     rectalSwabPositiveDate: zod.ZodNullable<zod.ZodString>;
-    isolation: zod.ZodEnum<["none", "respiratory", "contact", "droplets"]>;
+    isolation: zod.ZodString;
     updatedAt: zod.ZodString;
 }, "strip", zod.ZodTypeAny, {
     patientCode: string;
-    isolation: "none" | "respiratory" | "contact" | "droplets";
+    isolation: string;
     urinaryCatheterDays: number | null;
     nasogastricTubeDays: number | null;
     centralLineDays: number | null;
@@ -1051,16 +1129,18 @@ export declare const UpsertVigilanciaBedRecordResponse: zod.ZodObject<{
     rectalSwabOrganism: string;
     bedId: string;
     occupied: boolean;
-    diagnosis: string;
-    stayDays: number | null;
-    culturePositiveDate: string | null;
-    rectalSwabPositiveDate: string | null;
     age: number | null;
     affiliation: string | null;
+    diagnosis: string;
+    stayDays: number | null;
+    drainDays: number | null;
+    dialysisCatheterDays: number | null;
+    culturePositiveDate: string | null;
+    rectalSwabPositiveDate: string | null;
     updatedAt: string;
 }, {
     patientCode: string;
-    isolation: "none" | "respiratory" | "contact" | "droplets";
+    isolation: string;
     urinaryCatheterDays: number | null;
     nasogastricTubeDays: number | null;
     centralLineDays: number | null;
@@ -1071,12 +1151,14 @@ export declare const UpsertVigilanciaBedRecordResponse: zod.ZodObject<{
     rectalSwabOrganism: string;
     bedId: string;
     occupied: boolean;
-    diagnosis: string;
-    stayDays: number | null;
-    culturePositiveDate: string | null;
-    rectalSwabPositiveDate: string | null;
     age: number | null;
     affiliation: string | null;
+    diagnosis: string;
+    stayDays: number | null;
+    drainDays: number | null;
+    dialysisCatheterDays: number | null;
+    culturePositiveDate: string | null;
+    rectalSwabPositiveDate: string | null;
     updatedAt: string;
 }>;
 /**

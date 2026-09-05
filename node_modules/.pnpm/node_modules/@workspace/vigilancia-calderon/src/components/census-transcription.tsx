@@ -35,11 +35,13 @@ type EditableRow = {
   urinaryCatheterDays: string;
   nasogastricTubeDays: string;
   centralLineDays: string;
+  drainDays: string;
+  dialysisCatheterDays: string;
   cultureType: "unknown" | "none" | "urine" | "blood" | "respiratory" | "other";
   cultureStatus: "unknown" | "pending" | "negative" | "positive";
   cultureOrganism: string;
   culturePositiveDate: string;
-  isolation: "unknown" | "none" | "respiratory" | "contact" | "droplets";
+  isolation: string;
   rectalSwabStatus: "unknown" | "pending" | "negative" | "positive";
   rectalSwabOrganism: string;
   rectalSwabPositiveDate: string;
@@ -75,11 +77,13 @@ function makeEditableRow(row: VigilanciaTranscriptionRow): EditableRow {
     urinaryCatheterDays: numberValue(row.urinaryCatheterDays),
     nasogastricTubeDays: numberValue(row.nasogastricTubeDays),
     centralLineDays: numberValue(row.centralLineDays),
+    drainDays: numberValue(row.drainDays),
+    dialysisCatheterDays: numberValue(row.dialysisCatheterDays),
     cultureType: row.cultureType ?? "unknown",
     cultureStatus: row.cultureStatus ?? "unknown",
     cultureOrganism: row.cultureOrganism ?? "",
     culturePositiveDate: row.culturePositiveDate ?? "",
-    isolation: row.isolation ?? "unknown",
+    isolation: row.isolation ?? "",
     rectalSwabStatus: row.rectalSwabStatus ?? "unknown",
     rectalSwabOrganism: row.rectalSwabOrganism ?? "",
     rectalSwabPositiveDate: row.rectalSwabPositiveDate ?? "",
@@ -108,11 +112,13 @@ function toInput(row: EditableRow): VigilanciaBedRecordInput {
     urinaryCatheterDays: parseNumber(row.urinaryCatheterDays),
     nasogastricTubeDays: parseNumber(row.nasogastricTubeDays),
     centralLineDays: parseNumber(row.centralLineDays),
+    drainDays: parseNumber(row.drainDays),
+    dialysisCatheterDays: parseNumber(row.dialysisCatheterDays),
     cultureType: row.cultureType === "unknown" ? "none" : row.cultureType,
     cultureStatus: row.cultureType === "none" || row.cultureStatus === "unknown" ? "pending" : row.cultureStatus,
     cultureOrganism: row.cultureStatus === "positive" ? row.cultureOrganism.trim() : "",
     culturePositiveDate: row.cultureStatus === "positive" && row.cultureType !== "none" ? row.culturePositiveDate : null,
-    isolation: row.isolation === "unknown" ? "none" : row.isolation,
+    isolation: row.isolation.trim(),
     rectalSwabStatus: row.rectalSwabStatus === "unknown" ? "pending" : row.rectalSwabStatus,
     rectalSwabOrganism: row.rectalSwabStatus === "positive" ? row.rectalSwabOrganism.trim() : "",
     rectalSwabPositiveDate: row.rectalSwabStatus === "positive" ? row.rectalSwabPositiveDate : null,
@@ -396,7 +402,7 @@ export function CensusTranscription() {
            <table className="w-full min-w-[2140px] border-collapse text-left">
             <thead className="bg-muted/60 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
                  <tr>
-                   <th className="p-3">Aplicar</th><th className="p-3">Cama</th><th className="p-3">Estado</th><th className="p-3">Código</th><th className="p-3">Edad</th><th className="p-3">Afiliación</th><th className="p-3">Diagnóstico breve</th><th className="p-3">S. vesical</th><th className="p-3">S. NG</th><th className="p-3">Vía central</th><th className="p-3">Cultivo</th><th className="p-3">Resultado</th><th className="p-3">Fecha cultivo positivo</th><th className="p-3">Bacteria</th><th className="p-3">Aislamiento</th><th className="p-3">Hisopado</th><th className="p-3">Bacteria hisopado</th><th className="p-3">Fecha hisopado positivo</th><th className="p-3">Confianza</th>
+                   <th className="p-3">Aplicar</th><th className="p-3">Cama</th><th className="p-3">Estado</th><th className="p-3">Código</th><th className="p-3">Edad</th><th className="p-3">Afiliación</th><th className="p-3">Diagnóstico breve</th><th className="p-3">CUP</th><th className="p-3">CVC</th><th className="p-3">Drenaje</th><th className="p-3">Cat. Diálisis</th><th className="p-3">SNG</th><th className="p-3">Cultivo</th><th className="p-3">Resultado</th><th className="p-3">Fecha cultivo positivo</th><th className="p-3">Bacteria</th><th className="p-3">Aislamiento</th><th className="p-3">Hisopado</th><th className="p-3">Bacteria hisopado</th><th className="p-3">Fecha hisopado positivo</th><th className="p-3">Confianza</th>
               </tr>
             </thead>
             <tbody>
@@ -410,12 +416,12 @@ export function CensusTranscription() {
                    <td className="p-3"><input data-testid={`input-transcription-age-${index}`} type="text" inputMode="numeric" pattern="[0-9]*" value={row.age} disabled={row.occupied === "available"} onChange={(event) => updateRow(index, "age", event.target.value.replace(/[^0-9]/g, ''))} className={`${fieldClass} w-16 font-mono`} /></td>
                    <td className="p-3"><input data-testid={`input-transcription-affiliation-${index}`} value={row.affiliation} maxLength={120} disabled={row.occupied === "available"} onChange={(event) => updateRow(index, "affiliation", event.target.value)} className={`${fieldClass} w-28 uppercase`} /></td>
                    <td className="p-3"><input data-testid={`input-transcription-diagnosis-${index}`} value={row.diagnosis} maxLength={160} disabled={row.occupied === "available"} onChange={(event) => updateRow(index, "diagnosis", event.target.value)} className={`${fieldClass} w-40`} /></td>
-                  {(["urinaryCatheterDays", "nasogastricTubeDays", "centralLineDays"] as const).map((key) => <td key={key} className="p-3"><input data-testid={`input-transcription-${key}-${index}`} type="text" inputMode="numeric" pattern="[0-9]*" value={row[key]} disabled={row.occupied === "available"} onChange={(event) => updateRow(index, key, event.target.value.replace(/[^0-9]/g, ''))} className={`${fieldClass} w-20 font-mono`} /></td>)}
+                  {(["urinaryCatheterDays", "centralLineDays", "drainDays", "dialysisCatheterDays", "nasogastricTubeDays"] as const).map((key) => <td key={key} className="p-3"><input data-testid={`input-transcription-${key}-${index}`} type="text" inputMode="numeric" pattern="[0-9]*" value={row[key]} disabled={row.occupied === "available"} onChange={(event) => updateRow(index, key, event.target.value.replace(/[^0-9]/g, ''))} className={`${fieldClass} w-20 font-mono`} /></td>)}
                    <td className="p-3"><select data-testid={`select-transcription-culture-type-${index}`} value={row.cultureType} disabled={row.occupied === "available"} onChange={(event) => updateRow(index, "cultureType", event.target.value as EditableRow["cultureType"])} className={`${fieldClass} w-28`}><option value="unknown">Revisar</option><option value="none">Sin cultivo</option><option value="urine">Orina</option><option value="blood">Sangre</option><option value="respiratory">Respiratorio</option><option value="other">Otro</option></select></td>
                    <td className="p-3"><select data-testid={`select-transcription-culture-status-${index}`} value={row.cultureStatus} disabled={row.occupied === "available" || row.cultureType === "none"} onChange={(event) => updateRow(index, "cultureStatus", event.target.value as EditableRow["cultureStatus"])} className={`${fieldClass} w-24`}><option value="unknown">Revisar</option><option value="pending">Pendiente</option><option value="negative">Negativo</option><option value="positive">Positivo</option></select></td>
                    <td className="p-3"><input data-testid={`input-transcription-culture-positive-date-${index}`} type="date" value={row.culturePositiveDate} max="9999-12-31" disabled={row.occupied === "available" || row.cultureType === "none" || row.cultureStatus !== "positive"} onChange={(event) => updateRow(index, "culturePositiveDate", event.target.value)} className={`${fieldClass} w-36`} /></td>
                   <td className="p-3"><input value={row.cultureOrganism} maxLength={120} disabled={row.occupied === "available" || row.cultureStatus !== "positive"} onChange={(event) => updateRow(index, "cultureOrganism", event.target.value)} className={`${fieldClass} w-36`} /></td>
-                   <td className="p-3"><select data-testid={`select-transcription-isolation-${index}`} value={row.isolation} disabled={row.occupied === "available"} onChange={(event) => updateRow(index, "isolation", event.target.value as EditableRow["isolation"])} className={`${fieldClass} w-28`}><option value="unknown">Revisar</option><option value="none">Ninguno</option><option value="respiratory">Respiratorio</option><option value="contact">Contacto</option><option value="droplets">Gotas</option></select></td>
+                   <td className="p-3"><input data-testid={`input-transcription-isolation-${index}`} value={row.isolation} maxLength={120} disabled={row.occupied === "available"} onChange={(event) => updateRow(index, "isolation", event.target.value)} className={`${fieldClass} w-28 uppercase`} /></td>
                    <td className="p-3"><select data-testid={`select-transcription-rectal-status-${index}`} value={row.rectalSwabStatus} disabled={row.occupied === "available"} onChange={(event) => updateRow(index, "rectalSwabStatus", event.target.value as EditableRow["rectalSwabStatus"])} className={`${fieldClass} w-24`}><option value="unknown">Revisar</option><option value="pending">Pendiente</option><option value="negative">Negativo</option><option value="positive">Positivo</option></select></td>
                   <td className="p-3"><input value={row.rectalSwabOrganism} maxLength={120} disabled={row.occupied === "available" || row.rectalSwabStatus !== "positive"} onChange={(event) => updateRow(index, "rectalSwabOrganism", event.target.value)} className={`${fieldClass} w-36`} /></td>
                    <td className="p-3"><input data-testid={`input-transcription-rectal-positive-date-${index}`} type="date" value={row.rectalSwabPositiveDate} max="9999-12-31" disabled={row.occupied === "available" || row.rectalSwabStatus !== "positive"} onChange={(event) => updateRow(index, "rectalSwabPositiveDate", event.target.value)} className={`${fieldClass} w-36`} /></td>

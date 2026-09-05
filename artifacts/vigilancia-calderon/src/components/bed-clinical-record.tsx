@@ -2,7 +2,6 @@ import { useState } from "react";
 import type { VigilanciaBed, VigilanciaBedRecord, VigilanciaBedRecordInput } from "@workspace/api-client-react";
 import { Activity, Check, FlaskConical, ShieldCheck, Stethoscope, X } from "lucide-react";
 
-export type IsolationType = "none" | "respiratory" | "contact" | "droplets";
 export type RectalSwabStatus = "pending" | "negative" | "positive";
 export type CultureType = "none" | "urine" | "blood" | "respiratory" | "other";
 export type CultureStatus = "pending" | "negative" | "positive";
@@ -10,11 +9,15 @@ export type CultureStatus = "pending" | "negative" | "positive";
 export type BedClinicalRecord = {
   occupied: boolean;
   patientCode: string;
+  age: number | "";
+  affiliation: string;
   diagnosis: string;
   stayDays: number | "";
   urinaryCatheterDays: number | "";
   nasogastricTubeDays: number | "";
   centralLineDays: number | "";
+  drainDays: number | "";
+  dialysisCatheterDays: number | "";
   cultureType: CultureType;
   cultureStatus: CultureStatus;
   cultureOrganism: string;
@@ -22,18 +25,11 @@ export type BedClinicalRecord = {
   rectalSwabStatus: RectalSwabStatus;
   rectalSwabOrganism: string;
   rectalSwabPositiveDate: string;
-  isolation: IsolationType;
+  isolation: string;
   updatedAt: string;
 };
 
 export type BedClinicalRecords = Record<string, BedClinicalRecord>;
-
-const isolationLabels: Record<IsolationType, string> = {
-  none: "Sin aislamiento",
-  respiratory: "Aislamiento respiratorio",
-  contact: "Aislamiento de contacto",
-  droplets: "Aislamiento por gotas",
-};
 
 const swabLabels: Record<RectalSwabStatus, string> = {
   pending: "Pendiente / no realizado",
@@ -61,11 +57,15 @@ export function mapBedClinicalRecords(records: VigilanciaBedRecord[]): BedClinic
     {
       occupied: record.occupied,
       patientCode: record.patientCode,
+      age: record.age ?? "",
+      affiliation: record.affiliation ?? "",
       diagnosis: record.diagnosis,
       stayDays: record.stayDays ?? "",
       urinaryCatheterDays: record.urinaryCatheterDays ?? "",
       nasogastricTubeDays: record.nasogastricTubeDays ?? "",
       centralLineDays: record.centralLineDays ?? "",
+      drainDays: record.drainDays ?? "",
+      dialysisCatheterDays: record.dialysisCatheterDays ?? "",
       cultureType: record.cultureType,
       cultureStatus: record.cultureStatus,
       cultureOrganism: record.cultureOrganism,
@@ -83,11 +83,15 @@ export function toBedRecordInput(record: BedClinicalRecord): VigilanciaBedRecord
   return {
     occupied: record.occupied,
     patientCode: record.patientCode,
+    age: record.age === "" ? null : record.age,
+    affiliation: record.affiliation === "" ? null : record.affiliation,
     diagnosis: record.diagnosis,
     stayDays: record.stayDays === "" ? null : record.stayDays,
     urinaryCatheterDays: record.urinaryCatheterDays === "" ? null : record.urinaryCatheterDays,
     nasogastricTubeDays: record.nasogastricTubeDays === "" ? null : record.nasogastricTubeDays,
     centralLineDays: record.centralLineDays === "" ? null : record.centralLineDays,
+    drainDays: record.drainDays === "" ? null : record.drainDays,
+    dialysisCatheterDays: record.dialysisCatheterDays === "" ? null : record.dialysisCatheterDays,
     cultureType: record.cultureType,
     cultureStatus: record.cultureType === "none" ? "pending" : record.cultureStatus,
     cultureOrganism: record.cultureType !== "none" && record.cultureStatus === "positive" ? record.cultureOrganism : "",
@@ -103,11 +107,15 @@ export function getBedRecordDefaults(bed: VigilanciaBed): BedClinicalRecord {
   return {
     occupied: bed.patientCode !== "Disponible",
     patientCode: bed.patientCode === "Disponible" ? "" : bed.patientCode,
+    age: "",
+    affiliation: "",
     diagnosis: "",
     stayDays: bed.days || "",
     urinaryCatheterDays: bed.urinaryCatheterDays || "",
     nasogastricTubeDays: bed.nasogastricTubeDays || "",
     centralLineDays: bed.centralLineDays || "",
+    drainDays: "",
+    dialysisCatheterDays: "",
     cultureType: bed.cultureType ?? "none",
     cultureStatus: bed.cultureStatus ?? "pending",
     cultureOrganism: bed.cultureOrganism ?? "",
@@ -120,9 +128,6 @@ export function getBedRecordDefaults(bed: VigilanciaBed): BedClinicalRecord {
   };
 }
 
-export function isolationLabel(value: IsolationType) {
-  return isolationLabels[value];
-}
 
 export function swabLabel(value: RectalSwabStatus) {
   return swabLabels[value];
@@ -234,11 +239,15 @@ export function BedClinicalRecordDialog({
       : {
           occupied: false,
           patientCode: "",
+          age: "",
+          affiliation: "",
           diagnosis: "",
           stayDays: "",
           urinaryCatheterDays: "",
           nasogastricTubeDays: "",
           centralLineDays: "",
+          drainDays: "",
+          dialysisCatheterDays: "",
           cultureType: "none",
           cultureStatus: "pending",
           cultureOrganism: "",
@@ -246,7 +255,7 @@ export function BedClinicalRecordDialog({
           rectalSwabStatus: "pending",
           rectalSwabOrganism: "",
           rectalSwabPositiveDate: "",
-          isolation: "none",
+          isolation: "",
           updatedAt: new Date().toISOString(),
         };
     setSaving(true);
@@ -330,9 +339,11 @@ export function BedClinicalRecordDialog({
           <section className="space-y-4">
             <div className="flex items-center gap-2"><Activity size={16} className="text-primary" /><h3 className="text-sm font-semibold">Dispositivos invasivos</h3></div>
             <div className="grid gap-4 sm:grid-cols-3">
-              <NumberField id="input-bed-urinary-days" label="Sonda vesical" value={form.urinaryCatheterDays} onChange={(value) => update("urinaryCatheterDays", value)} hint="Días acumulados de uso" />
-              <NumberField id="input-bed-nasogastric-days" label="Sonda nasogástrica" value={form.nasogastricTubeDays} onChange={(value) => update("nasogastricTubeDays", value)} hint="Días acumulados de uso" />
-              <NumberField id="input-bed-central-days" label="Vía central" value={form.centralLineDays} onChange={(value) => update("centralLineDays", value)} hint="Días acumulados de uso" />
+              <NumberField id="input-bed-urinary-days" label="CUP" value={form.urinaryCatheterDays} onChange={(value) => update("urinaryCatheterDays", value)} hint="Días acumulados" />
+              <NumberField id="input-bed-central-days" label="CVC" value={form.centralLineDays} onChange={(value) => update("centralLineDays", value)} hint="Días acumulados" />
+              <NumberField id="input-bed-drain-days" label="Drenaje" value={form.drainDays} onChange={(value) => update("drainDays", value)} hint="Días acumulados" />
+              <NumberField id="input-bed-dialysis-days" label="Cat. Diálisis" value={form.dialysisCatheterDays} onChange={(value) => update("dialysisCatheterDays", value)} hint="Días acumulados" />
+              <NumberField id="input-bed-nasogastric-days" label="SNG" value={form.nasogastricTubeDays} onChange={(value) => update("nasogastricTubeDays", value)} hint="Días acumulados" />
             </div>
           </section>
 
@@ -387,12 +398,15 @@ export function BedClinicalRecordDialog({
             <div className="space-y-4 rounded-xl border border-border bg-background/35 p-4">
               <div className="flex items-center gap-2"><ShieldCheck size={16} className="text-primary" /><h3 className="text-sm font-semibold">Tipo de aislamiento</h3></div>
               <div className="space-y-2">
-                {Object.entries(isolationLabels).map(([value, label]) => (
-                  <label key={value} className={`flex cursor-pointer items-center gap-3 rounded-lg border px-3 py-2.5 text-xs transition-colors ${form.isolation === value ? "border-primary bg-primary/10 text-foreground" : "border-border text-muted-foreground hover:bg-muted/60"}`}>
-                    <input type="radio" name="isolation" value={value} checked={form.isolation === value} onChange={() => update("isolation", value as IsolationType)} className="h-4 w-4 accent-[hsl(var(--primary))]" />
-                    {label}
-                  </label>
-                ))}
+                <input
+                  id="input-bed-isolation"
+                  data-testid="input-bed-isolation"
+                  value={form.isolation}
+                  onChange={(event) => update("isolation", event.target.value)}
+                  placeholder="Ej. Respiratorio"
+                  maxLength={120}
+                  className="mt-2 h-11 w-full rounded-lg border border-input bg-background px-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-primary"
+                />
               </div>
             </div>
           </section>

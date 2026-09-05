@@ -33,11 +33,15 @@ function bedRecordDefaults(bed: VigilanciaBed): BedClinicalRecord {
   return {
     occupied: bed.patientCode !== "Disponible",
     patientCode: bed.patientCode === "Disponible" ? "" : bed.patientCode,
+    age: "",
+    affiliation: "",
     diagnosis: "",
     stayDays: bed.days || "",
     urinaryCatheterDays: bed.urinaryCatheterDays || "",
     nasogastricTubeDays: bed.nasogastricTubeDays || "",
     centralLineDays: bed.centralLineDays || "",
+    drainDays: "",
+    dialysisCatheterDays: "",
     cultureType: bed.cultureType ?? "none",
     cultureStatus: bed.cultureStatus ?? "pending",
     cultureOrganism: bed.cultureOrganism ?? "",
@@ -45,7 +49,7 @@ function bedRecordDefaults(bed: VigilanciaBed): BedClinicalRecord {
     rectalSwabStatus: bed.rectalSwabStatus ?? "pending",
     rectalSwabOrganism: bed.rectalSwabOrganism ?? "",
     rectalSwabPositiveDate: "",
-    isolation: bed.isolation ?? "none",
+    isolation: bed.isolation ?? "",
     updatedAt: "",
   };
 }

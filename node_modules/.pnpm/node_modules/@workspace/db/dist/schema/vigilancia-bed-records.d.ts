@@ -172,6 +172,40 @@ export declare const vigilanciaBedRecordsTable: import("drizzle-orm/pg-core").Pg
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
+        drainDays: import("drizzle-orm/pg-core").PgColumn<{
+            name: "drain_days";
+            tableName: "vigilancia_bed_records";
+            dataType: "number";
+            columnType: "PgInteger";
+            data: number;
+            driverParam: string | number;
+            notNull: false;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+        dialysisCatheterDays: import("drizzle-orm/pg-core").PgColumn<{
+            name: "dialysis_catheter_days";
+            tableName: "vigilancia_bed_records";
+            dataType: "number";
+            columnType: "PgInteger";
+            data: number;
+            driverParam: string | number;
+            notNull: false;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
         cultureType: import("drizzle-orm/pg-core").PgColumn<{
             name: "culture_type";
             tableName: "vigilancia_bed_records";
@@ -339,6 +373,8 @@ export declare const insertVigilanciaBedRecordSchema: import("zod/v4").ZodObject
     urinaryCatheterDays: import("zod/v4").ZodOptional<import("zod/v4").ZodNullable<import("zod/v4").ZodInt>>;
     nasogastricTubeDays: import("zod/v4").ZodOptional<import("zod/v4").ZodNullable<import("zod/v4").ZodInt>>;
     centralLineDays: import("zod/v4").ZodOptional<import("zod/v4").ZodNullable<import("zod/v4").ZodInt>>;
+    drainDays: import("zod/v4").ZodOptional<import("zod/v4").ZodNullable<import("zod/v4").ZodInt>>;
+    dialysisCatheterDays: import("zod/v4").ZodOptional<import("zod/v4").ZodNullable<import("zod/v4").ZodInt>>;
     cultureType: import("zod/v4").ZodString;
     cultureStatus: import("zod/v4").ZodString;
     cultureOrganism: import("zod/v4").ZodString;

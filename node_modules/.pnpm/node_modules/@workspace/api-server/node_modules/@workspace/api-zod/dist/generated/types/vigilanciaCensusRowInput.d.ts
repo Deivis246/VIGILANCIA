@@ -7,7 +7,6 @@
  */
 import type { VigilanciaCensusRowInputCultureStatus } from './vigilanciaCensusRowInputCultureStatus';
 import type { VigilanciaCensusRowInputCultureType } from './vigilanciaCensusRowInputCultureType';
-import type { VigilanciaCensusRowInputIsolation } from './vigilanciaCensusRowInputIsolation';
 import type { VigilanciaCensusRowInputRectalSwabStatus } from './vigilanciaCensusRowInputRectalSwabStatus';
 export interface VigilanciaCensusRowInput {
     /** @pattern ^(20[1-9]|21[0-1]|2[12][0-3])-[abc]$ */
@@ -47,6 +46,16 @@ export interface VigilanciaCensusRowInput {
        * @nullable
        */
     centralLineDays: number | null;
+    /**
+       * @minimum 0
+       * @nullable
+       */
+    drainDays: number | null;
+    /**
+       * @minimum 0
+       * @nullable
+       */
+    dialysisCatheterDays: number | null;
     cultureType: VigilanciaCensusRowInputCultureType;
     cultureStatus: VigilanciaCensusRowInputCultureStatus;
     /** @maxLength 120 */
@@ -64,6 +73,10 @@ export interface VigilanciaCensusRowInput {
        * @pattern ^\d{4}-\d{2}-\d{2}$
        */
     rectalSwabPositiveDate: string | null;
-    isolation: VigilanciaCensusRowInputIsolation;
+    /**
+       * @maxLength 120
+       * @nullable
+       */
+    isolation: string | null;
 }
 //# sourceMappingURL=vigilanciaCensusRowInput.d.ts.map

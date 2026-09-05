@@ -452,6 +452,14 @@ components:
           type: ["number", "null"]
           multipleOf: 1
           minimum: 0
+        drainDays:
+          type: ["number", "null"]
+          multipleOf: 1
+          minimum: 0
+        dialysisCatheterDays:
+          type: ["number", "null"]
+          multipleOf: 1
+          minimum: 0
         cultureType:
           type: string
           enum: [none, urine, blood, respiratory, other]
@@ -475,10 +483,10 @@ components:
           pattern: '^\d{4}-\d{2}-\d{2}$'
         isolation:
           type: string
-          enum: [none, respiratory, contact, droplets]
+          maxLength: 120
         updatedAt:
           type: string
-      required: [bedId, occupied, patientCode, age, affiliation, diagnosis, stayDays, urinaryCatheterDays, nasogastricTubeDays, centralLineDays, cultureType, cultureStatus, cultureOrganism, culturePositiveDate, rectalSwabStatus, rectalSwabOrganism, rectalSwabPositiveDate, isolation, updatedAt]
+      required: [bedId, occupied, patientCode, age, affiliation, diagnosis, stayDays, urinaryCatheterDays, nasogastricTubeDays, centralLineDays, drainDays, dialysisCatheterDays, cultureType, cultureStatus, cultureOrganism, culturePositiveDate, rectalSwabStatus, rectalSwabOrganism, rectalSwabPositiveDate, isolation, updatedAt]
     VigilanciaBedRecordInput:
       type: object
       properties:
@@ -513,6 +521,14 @@ components:
           type: ["number", "null"]
           multipleOf: 1
           minimum: 0
+        drainDays:
+          type: ["number", "null"]
+          multipleOf: 1
+          minimum: 0
+        dialysisCatheterDays:
+          type: ["number", "null"]
+          multipleOf: 1
+          minimum: 0
         cultureType:
           type: string
           enum: [none, urine, blood, respiratory, other]
@@ -536,8 +552,8 @@ components:
           pattern: '^\d{4}-\d{2}-\d{2}$'
         isolation:
           type: string
-          enum: [none, respiratory, contact, droplets]
-      required: [occupied, patientCode, age, affiliation, diagnosis, stayDays, urinaryCatheterDays, nasogastricTubeDays, centralLineDays, cultureType, cultureStatus, cultureOrganism, rectalSwabStatus, rectalSwabOrganism, isolation]
+          maxLength: 120
+      required: [occupied, patientCode, age, affiliation, diagnosis, stayDays, urinaryCatheterDays, nasogastricTubeDays, centralLineDays, drainDays, dialysisCatheterDays, cultureType, cultureStatus, cultureOrganism, rectalSwabStatus, rectalSwabOrganism, isolation]
     VigilanciaCensusRowInput:
       type: object
       properties:
@@ -575,6 +591,15 @@ components:
           type: ["number", "null"]
           multipleOf: 1
           minimum: 0
+        drainDays:
+          type: ["number", "null"]
+          multipleOf: 1
+          minimum: 0
+        dialysisCatheterDays:
+          type: ["number", "null"]
+          multipleOf: 1
+          minimum: 0
+
         cultureType:
           type: string
           enum: [none, urine, blood, respiratory, other]
@@ -597,9 +622,9 @@ components:
           type: ["string", "null"]
           pattern: '^\d{4}-\d{2}-\d{2}$'
         isolation:
-          type: string
-          enum: [none, respiratory, contact, droplets]
-      required: [bedId, occupied, patientCode, age, affiliation, diagnosis, stayDays, urinaryCatheterDays, nasogastricTubeDays, centralLineDays, cultureType, cultureStatus, cultureOrganism, culturePositiveDate, rectalSwabStatus, rectalSwabOrganism, rectalSwabPositiveDate, isolation]
+          type: ["string", "null"]
+          maxLength: 120
+      required: [bedId, occupied, patientCode, age, affiliation, diagnosis, stayDays, urinaryCatheterDays, nasogastricTubeDays, centralLineDays, drainDays, dialysisCatheterDays, cultureType, cultureStatus, cultureOrganism, culturePositiveDate, rectalSwabStatus, rectalSwabOrganism, rectalSwabPositiveDate, isolation]
     VigilanciaCensusApplyInput:
       type: object
       properties:
@@ -637,6 +662,13 @@ components:
         patientCode:
           type: ["string", "null"]
           maxLength: 20
+        age:
+          type: ["number", "null"]
+          multipleOf: 1
+          minimum: 0
+        affiliation:
+          type: ["string", "null"]
+          maxLength: 120
         diagnosis:
           type: ["string", "null"]
           maxLength: 160
@@ -656,6 +688,14 @@ components:
           type: ["number", "null"]
           multipleOf: 1
           minimum: 0
+        drainDays:
+          type: ["number", "null"]
+          multipleOf: 1
+          minimum: 0
+        dialysisCatheterDays:
+          type: ["number", "null"]
+          multipleOf: 1
+          minimum: 0
         cultureType:
           type: ["string", "null"]
           enum: [none, urine, blood, respiratory, other]
@@ -670,7 +710,7 @@ components:
           pattern: '^\d{4}-\d{2}-\d{2}$'
         isolation:
           type: ["string", "null"]
-          enum: [none, respiratory, contact, droplets]
+          maxLength: 120
         rectalSwabStatus:
           type: ["string", "null"]
           enum: [pending, negative, positive]
@@ -688,7 +728,7 @@ components:
           items:
             type: string
             maxLength: 240
-      required: [bedId, occupied, patientCode, diagnosis, stayDays, urinaryCatheterDays, nasogastricTubeDays, culturePositiveDate, centralLineDays, cultureType, cultureStatus, cultureOrganism, isolation, rectalSwabStatus, rectalSwabOrganism, rectalSwabPositiveDate, confidence, warnings]
+      required: [bedId, occupied, patientCode, age, affiliation, diagnosis, stayDays, urinaryCatheterDays, nasogastricTubeDays, culturePositiveDate, centralLineDays, drainDays, dialysisCatheterDays, cultureType, cultureStatus, cultureOrganism, isolation, rectalSwabStatus, rectalSwabOrganism, rectalSwabPositiveDate, confidence, warnings]
     VigilanciaTranscriptionResponse:
       type: object
       properties:

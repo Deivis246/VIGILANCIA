@@ -8,7 +8,6 @@
 import type { VigilanciaTranscriptionRowConfidence } from './vigilanciaTranscriptionRowConfidence';
 import type { VigilanciaTranscriptionRowCultureStatus } from './vigilanciaTranscriptionRowCultureStatus';
 import type { VigilanciaTranscriptionRowCultureType } from './vigilanciaTranscriptionRowCultureType';
-import type { VigilanciaTranscriptionRowIsolation } from './vigilanciaTranscriptionRowIsolation';
 import type { VigilanciaTranscriptionRowRectalSwabStatus } from './vigilanciaTranscriptionRowRectalSwabStatus';
 
 export interface VigilanciaTranscriptionRow {
@@ -21,6 +20,16 @@ export interface VigilanciaTranscriptionRow {
      * @nullable
      */
   patientCode: string | null;
+  /**
+     * @minimum 0
+     * @nullable
+     */
+  age: number | null;
+  /**
+     * @maxLength 120
+     * @nullable
+     */
+  affiliation: string | null;
   /**
      * @maxLength 160
      * @nullable
@@ -46,6 +55,16 @@ export interface VigilanciaTranscriptionRow {
      * @nullable
      */
   centralLineDays: number | null;
+  /**
+     * @minimum 0
+     * @nullable
+     */
+  drainDays: number | null;
+  /**
+     * @minimum 0
+     * @nullable
+     */
+  dialysisCatheterDays: number | null;
   /** @nullable */
   cultureType: VigilanciaTranscriptionRowCultureType;
   /** @nullable */
@@ -60,8 +79,11 @@ export interface VigilanciaTranscriptionRow {
      * @pattern ^\d{4}-\d{2}-\d{2}$
      */
   culturePositiveDate: string | null;
-  /** @nullable */
-  isolation: VigilanciaTranscriptionRowIsolation;
+  /**
+     * @maxLength 120
+     * @nullable
+     */
+  isolation: string | null;
   /** @nullable */
   rectalSwabStatus: VigilanciaTranscriptionRowRectalSwabStatus;
   /**
