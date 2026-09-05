@@ -14,6 +14,8 @@ export interface VigilanciaCensusRowInput {
     occupied: boolean;
     /** @maxLength 20 */
     patientCode: string;
+    /** @maxLength 200 */
+    patientName: string;
     /**
        * @minimum 0
        * @nullable

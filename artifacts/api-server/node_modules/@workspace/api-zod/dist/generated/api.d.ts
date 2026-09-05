@@ -497,6 +497,7 @@ export declare const TranscribeVigilanciaCensusBody: zod.ZodObject<{
     mimeType: "image/jpeg" | "image/png" | "image/webp" | "application/pdf";
 }>;
 export declare const transcribeVigilanciaCensusResponseRowsItemPatientCodeMax = 20;
+export declare const transcribeVigilanciaCensusResponseRowsItemPatientNameMax = 200;
 export declare const transcribeVigilanciaCensusResponseRowsItemAgeMin = 0;
 export declare const transcribeVigilanciaCensusResponseRowsItemAgeMultipleOf = 1;
 export declare const transcribeVigilanciaCensusResponseRowsItemAffiliationMax = 120;
@@ -527,6 +528,7 @@ export declare const TranscribeVigilanciaCensusResponse: zod.ZodObject<{
         bedId: zod.ZodNullable<zod.ZodString>;
         occupied: zod.ZodNullable<zod.ZodBoolean>;
         patientCode: zod.ZodNullable<zod.ZodString>;
+        patientName: zod.ZodNullable<zod.ZodString>;
         age: zod.ZodNullable<zod.ZodNumber>;
         affiliation: zod.ZodNullable<zod.ZodString>;
         diagnosis: zod.ZodNullable<zod.ZodString>;
@@ -560,6 +562,7 @@ export declare const TranscribeVigilanciaCensusResponse: zod.ZodObject<{
         rectalSwabOrganism: string | null;
         bedId: string | null;
         occupied: boolean | null;
+        patientName: string | null;
         age: number | null;
         affiliation: string | null;
         diagnosis: string | null;
@@ -584,6 +587,7 @@ export declare const TranscribeVigilanciaCensusResponse: zod.ZodObject<{
         rectalSwabOrganism: string | null;
         bedId: string | null;
         occupied: boolean | null;
+        patientName: string | null;
         age: number | null;
         affiliation: string | null;
         diagnosis: string | null;
@@ -626,6 +630,7 @@ export declare const TranscribeVigilanciaCensusResponse: zod.ZodObject<{
         rectalSwabOrganism: string | null;
         bedId: string | null;
         occupied: boolean | null;
+        patientName: string | null;
         age: number | null;
         affiliation: string | null;
         diagnosis: string | null;
@@ -659,6 +664,7 @@ export declare const TranscribeVigilanciaCensusResponse: zod.ZodObject<{
         rectalSwabOrganism: string | null;
         bedId: string | null;
         occupied: boolean | null;
+        patientName: string | null;
         age: number | null;
         affiliation: string | null;
         diagnosis: string | null;
@@ -682,6 +688,7 @@ export declare const TranscribeVigilanciaCensusResponse: zod.ZodObject<{
  * @summary List saved bed records
  */
 export declare const getVigilanciaBedRecordsResponsePatientCodeMax = 20;
+export declare const getVigilanciaBedRecordsResponsePatientNameMax = 200;
 export declare const getVigilanciaBedRecordsResponseAgeMin = 0;
 export declare const getVigilanciaBedRecordsResponseAgeMultipleOf = 1;
 export declare const getVigilanciaBedRecordsResponseAffiliationMax = 120;
@@ -708,6 +715,7 @@ export declare const GetVigilanciaBedRecordsResponseItem: zod.ZodObject<{
     bedId: zod.ZodString;
     occupied: zod.ZodBoolean;
     patientCode: zod.ZodString;
+    patientName: zod.ZodString;
     age: zod.ZodNullable<zod.ZodNumber>;
     affiliation: zod.ZodNullable<zod.ZodString>;
     diagnosis: zod.ZodString;
@@ -740,6 +748,7 @@ export declare const GetVigilanciaBedRecordsResponseItem: zod.ZodObject<{
     rectalSwabOrganism: string;
     bedId: string;
     occupied: boolean;
+    patientName: string;
     age: number | null;
     affiliation: string | null;
     diagnosis: string;
@@ -763,6 +772,7 @@ export declare const GetVigilanciaBedRecordsResponseItem: zod.ZodObject<{
     rectalSwabOrganism: string;
     bedId: string;
     occupied: boolean;
+    patientName: string;
     age: number | null;
     affiliation: string | null;
     diagnosis: string;
@@ -778,6 +788,7 @@ export declare const GetVigilanciaBedRecordsResponse: zod.ZodArray<zod.ZodObject
     bedId: zod.ZodString;
     occupied: zod.ZodBoolean;
     patientCode: zod.ZodString;
+    patientName: zod.ZodString;
     age: zod.ZodNullable<zod.ZodNumber>;
     affiliation: zod.ZodNullable<zod.ZodString>;
     diagnosis: zod.ZodString;
@@ -810,6 +821,7 @@ export declare const GetVigilanciaBedRecordsResponse: zod.ZodArray<zod.ZodObject
     rectalSwabOrganism: string;
     bedId: string;
     occupied: boolean;
+    patientName: string;
     age: number | null;
     affiliation: string | null;
     diagnosis: string;
@@ -833,6 +845,7 @@ export declare const GetVigilanciaBedRecordsResponse: zod.ZodArray<zod.ZodObject
     rectalSwabOrganism: string;
     bedId: string;
     occupied: boolean;
+    patientName: string;
     age: number | null;
     affiliation: string | null;
     diagnosis: string;
@@ -850,6 +863,7 @@ export declare const GetVigilanciaBedRecordsResponse: zod.ZodArray<zod.ZodObject
  */
 export declare const applyVigilanciaCensusBodyRowsItemBedIdRegExp: RegExp;
 export declare const applyVigilanciaCensusBodyRowsItemPatientCodeMax = 20;
+export declare const applyVigilanciaCensusBodyRowsItemPatientNameMax = 200;
 export declare const applyVigilanciaCensusBodyRowsItemAgeMin = 0;
 export declare const applyVigilanciaCensusBodyRowsItemAgeMultipleOf = 1;
 export declare const applyVigilanciaCensusBodyRowsItemAffiliationMax = 120;
@@ -877,6 +891,7 @@ export declare const ApplyVigilanciaCensusBody: zod.ZodObject<{
         bedId: zod.ZodString;
         occupied: zod.ZodBoolean;
         patientCode: zod.ZodString;
+        patientName: zod.ZodString;
         age: zod.ZodNullable<zod.ZodNumber>;
         affiliation: zod.ZodNullable<zod.ZodString>;
         diagnosis: zod.ZodString;
@@ -908,6 +923,7 @@ export declare const ApplyVigilanciaCensusBody: zod.ZodObject<{
         rectalSwabOrganism: string;
         bedId: string;
         occupied: boolean;
+        patientName: string;
         age: number | null;
         affiliation: string | null;
         diagnosis: string;
@@ -930,6 +946,7 @@ export declare const ApplyVigilanciaCensusBody: zod.ZodObject<{
         rectalSwabOrganism: string;
         bedId: string;
         occupied: boolean;
+        patientName: string;
         age: number | null;
         affiliation: string | null;
         diagnosis: string;
@@ -954,6 +971,7 @@ export declare const ApplyVigilanciaCensusBody: zod.ZodObject<{
         rectalSwabOrganism: string;
         bedId: string;
         occupied: boolean;
+        patientName: string;
         age: number | null;
         affiliation: string | null;
         diagnosis: string;
@@ -978,6 +996,7 @@ export declare const ApplyVigilanciaCensusBody: zod.ZodObject<{
         rectalSwabOrganism: string;
         bedId: string;
         occupied: boolean;
+        patientName: string;
         age: number | null;
         affiliation: string | null;
         diagnosis: string;
@@ -1009,6 +1028,7 @@ export declare const UpsertVigilanciaBedRecordParams: zod.ZodObject<{
     bedId: string;
 }>;
 export declare const upsertVigilanciaBedRecordBodyPatientCodeMax = 20;
+export declare const upsertVigilanciaBedRecordBodyPatientNameMax = 200;
 export declare const upsertVigilanciaBedRecordBodyAgeMin = 0;
 export declare const upsertVigilanciaBedRecordBodyAgeMultipleOf = 1;
 export declare const upsertVigilanciaBedRecordBodyAffiliationMax = 120;
@@ -1034,6 +1054,7 @@ export declare const upsertVigilanciaBedRecordBodyCensusDateRegExp: RegExp;
 export declare const UpsertVigilanciaBedRecordBody: zod.ZodObject<{
     occupied: zod.ZodBoolean;
     patientCode: zod.ZodString;
+    patientName: zod.ZodString;
     age: zod.ZodNullable<zod.ZodNumber>;
     affiliation: zod.ZodNullable<zod.ZodString>;
     diagnosis: zod.ZodString;
@@ -1064,6 +1085,7 @@ export declare const UpsertVigilanciaBedRecordBody: zod.ZodObject<{
     rectalSwabStatus: "pending" | "negative" | "positive";
     rectalSwabOrganism: string;
     occupied: boolean;
+    patientName: string;
     age: number | null;
     affiliation: string | null;
     diagnosis: string;
@@ -1085,6 +1107,7 @@ export declare const UpsertVigilanciaBedRecordBody: zod.ZodObject<{
     rectalSwabStatus: "pending" | "negative" | "positive";
     rectalSwabOrganism: string;
     occupied: boolean;
+    patientName: string;
     age: number | null;
     affiliation: string | null;
     diagnosis: string;
@@ -1096,6 +1119,7 @@ export declare const UpsertVigilanciaBedRecordBody: zod.ZodObject<{
     rectalSwabPositiveDate?: string | null | undefined;
 }>;
 export declare const upsertVigilanciaBedRecordResponsePatientCodeMax = 20;
+export declare const upsertVigilanciaBedRecordResponsePatientNameMax = 200;
 export declare const upsertVigilanciaBedRecordResponseAgeMin = 0;
 export declare const upsertVigilanciaBedRecordResponseAgeMultipleOf = 1;
 export declare const upsertVigilanciaBedRecordResponseAffiliationMax = 120;
@@ -1122,6 +1146,7 @@ export declare const UpsertVigilanciaBedRecordResponse: zod.ZodObject<{
     bedId: zod.ZodString;
     occupied: zod.ZodBoolean;
     patientCode: zod.ZodString;
+    patientName: zod.ZodString;
     age: zod.ZodNullable<zod.ZodNumber>;
     affiliation: zod.ZodNullable<zod.ZodString>;
     diagnosis: zod.ZodString;
@@ -1154,6 +1179,7 @@ export declare const UpsertVigilanciaBedRecordResponse: zod.ZodObject<{
     rectalSwabOrganism: string;
     bedId: string;
     occupied: boolean;
+    patientName: string;
     age: number | null;
     affiliation: string | null;
     diagnosis: string;
@@ -1177,6 +1203,7 @@ export declare const UpsertVigilanciaBedRecordResponse: zod.ZodObject<{
     rectalSwabOrganism: string;
     bedId: string;
     occupied: boolean;
+    patientName: string;
     age: number | null;
     affiliation: string | null;
     diagnosis: string;

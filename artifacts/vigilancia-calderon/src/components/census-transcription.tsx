@@ -28,6 +28,7 @@ type EditableRow = {
   bedId: string;
   occupied: "unknown" | "occupied" | "available";
   patientCode: string;
+  patientName: string;
   age: string;
   affiliation: string;
   diagnosis: string;
@@ -71,6 +72,7 @@ function makeEditableRow(row: VigilanciaTranscriptionRow): EditableRow {
     bedId: row.bedId ?? "",
     occupied: row.occupied == null ? "unknown" : row.occupied ? "occupied" : "available",
     patientCode: row.patientCode ?? "",
+    patientName: row.patientName ?? "",
     age: numberValue(row.age),
     affiliation: row.affiliation ?? "",
     diagnosis: row.diagnosis ?? "",
@@ -107,6 +109,7 @@ function toInput(row: EditableRow): VigilanciaBedRecordInput {
   return {
     occupied: true,
     patientCode: row.patientCode.trim().toUpperCase(),
+    patientName: row.patientName.trim(),
     age: parseNumber(row.age),
     affiliation: row.affiliation.trim(),
     diagnosis: row.diagnosis.trim(),
@@ -405,7 +408,7 @@ export function CensusTranscription() {
            <table className="w-full min-w-[2140px] border-collapse text-left">
             <thead className="bg-muted/60 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
                  <tr>
-                   <th className="p-3">Aplicar</th><th className="p-3">Cama</th><th className="p-3">Estado</th><th className="p-3">Código</th><th className="p-3">Edad</th><th className="p-3">Afiliación</th><th className="p-3">Diagnóstico breve</th><th className="p-3">Fecha censo</th><th className="p-3">CUP</th><th className="p-3">CVC</th><th className="p-3">Drenaje</th><th className="p-3">Cat. Diálisis</th><th className="p-3">SNG</th><th className="p-3">Cultivo</th><th className="p-3">Resultado</th><th className="p-3">Fecha cultivo positivo</th><th className="p-3">Bacteria</th><th className="p-3">Aislamiento</th><th className="p-3">Hisopado</th><th className="p-3">Bacteria hisopado</th><th className="p-3">Fecha hisopado positivo</th><th className="p-3">Confianza</th>
+                   <th className="p-3">Aplicar</th><th className="p-3">Cama</th><th className="p-3">Estado</th><th className="p-3">Código</th><th className="p-3">Nombres y Apellidos</th><th className="p-3">Edad</th><th className="p-3">Afiliación</th><th className="p-3">Diagnóstico breve</th><th className="p-3">Fecha censo</th><th className="p-3">CUP</th><th className="p-3">CVC</th><th className="p-3">Drenaje</th><th className="p-3">Cat. Diálisis</th><th className="p-3">SNG</th><th className="p-3">Cultivo</th><th className="p-3">Resultado</th><th className="p-3">Fecha cultivo positivo</th><th className="p-3">Bacteria</th><th className="p-3">Aislamiento</th><th className="p-3">Hisopado</th><th className="p-3">Bacteria hisopado</th><th className="p-3">Fecha hisopado positivo</th><th className="p-3">Confianza</th>
               </tr>
             </thead>
             <tbody>
@@ -416,6 +419,7 @@ export function CensusTranscription() {
                   <td className="p-3"><select data-testid={`select-transcription-bed-${index}`} aria-invalid={Boolean(validation)} value={row.bedId} onChange={(event) => updateRow(index, "bedId", event.target.value)} className={`${fieldClass} w-24`}><option value="">Revisar</option>{BED_IDS.map((bedId) => <option key={bedId} value={bedId}>{bedId.toUpperCase()}</option>)}</select>{validation && <p className="mt-2 w-44 text-[10px] leading-relaxed text-destructive">{validation}</p>}{row.warnings.length > 0 && <ul className="mt-2 w-48 space-y-1 text-[10px] leading-relaxed text-amber-300">{row.warnings.map((warning, warningIndex) => <li key={`${warning}-${warningIndex}`}>• {warning}</li>)}</ul>}</td>
                   <td className="p-3"><select data-testid={`select-transcription-occupancy-${index}`} value={row.occupied} onChange={(event) => updateRow(index, "occupied", event.target.value as EditableRow["occupied"])} className={`${fieldClass} w-28`}><option value="unknown">Revisar</option><option value="occupied">Ocupada</option><option value="available">Disponible</option></select></td>
                    <td className="p-3"><input data-testid={`input-transcription-code-${index}`} value={row.patientCode} maxLength={20} disabled={row.occupied === "available"} onChange={(event) => updateRow(index, "patientCode", event.target.value)} className={`${fieldClass} w-28 uppercase`} /></td>
+                   <td className="p-3"><input data-testid={`input-transcription-name-${index}`} value={row.patientName} maxLength={200} disabled={row.occupied === "available"} onChange={(event) => updateRow(index, "patientName", event.target.value)} className={`${fieldClass} w-44`} /></td>
                    <td className="p-3"><input data-testid={`input-transcription-age-${index}`} type="text" inputMode="numeric" pattern="[0-9]*" value={row.age} disabled={row.occupied === "available"} onChange={(event) => updateRow(index, "age", event.target.value.replace(/[^0-9]/g, ''))} className={`${fieldClass} w-16 font-mono`} /></td>
                    <td className="p-3"><input data-testid={`input-transcription-affiliation-${index}`} value={row.affiliation} maxLength={120} disabled={row.occupied === "available"} onChange={(event) => updateRow(index, "affiliation", event.target.value)} className={`${fieldClass} w-28 uppercase`} /></td>
                    <td className="p-3"><input data-testid={`input-transcription-diagnosis-${index}`} value={row.diagnosis} maxLength={160} disabled={row.occupied === "available"} onChange={(event) => updateRow(index, "diagnosis", event.target.value)} className={`${fieldClass} w-40`} /></td>

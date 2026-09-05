@@ -291,6 +291,8 @@ export interface VigilanciaBedRecord {
   occupied: boolean;
   /** @maxLength 20 */
   patientCode: string;
+  /** @maxLength 200 */
+  patientName: string;
   /**
      * @minimum 0
      * @nullable
@@ -393,6 +395,8 @@ export interface VigilanciaBedRecordInput {
   occupied: boolean;
   /** @maxLength 20 */
   patientCode: string;
+  /** @maxLength 200 */
+  patientName: string;
   /**
      * @minimum 0
      * @nullable
@@ -496,6 +500,8 @@ export interface VigilanciaCensusRowInput {
   occupied: boolean;
   /** @maxLength 20 */
   patientCode: string;
+  /** @maxLength 200 */
+  patientName: string;
   /**
      * @minimum 0
      * @nullable
@@ -650,6 +656,11 @@ export interface VigilanciaTranscriptionRow {
      * @nullable
      */
   patientCode: string | null;
+  /**
+     * @maxLength 200
+     * @nullable
+     */
+  patientName: string | null;
   /**
      * @minimum 0
      * @nullable

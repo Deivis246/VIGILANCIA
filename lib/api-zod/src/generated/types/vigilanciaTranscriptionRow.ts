@@ -21,6 +21,11 @@ export interface VigilanciaTranscriptionRow {
      */
   patientCode: string | null;
   /**
+     * @maxLength 200
+     * @nullable
+     */
+  patientName: string | null;
+  /**
      * @minimum 0
      * @nullable
      */

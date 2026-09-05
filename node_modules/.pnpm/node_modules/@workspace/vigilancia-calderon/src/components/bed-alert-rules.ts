@@ -33,6 +33,7 @@ function bedRecordDefaults(bed: VigilanciaBed): BedClinicalRecord {
   return {
     occupied: bed.patientCode !== "Disponible",
     patientCode: bed.patientCode === "Disponible" ? "" : bed.patientCode,
+    patientName: "",
     age: "",
     affiliation: "",
     diagnosis: "",

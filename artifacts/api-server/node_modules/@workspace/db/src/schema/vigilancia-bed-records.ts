@@ -5,6 +5,7 @@ export const vigilanciaBedRecordsTable = pgTable("vigilancia_bed_records", {
   bedId: text("bed_id").primaryKey(),
   occupied: boolean("occupied").notNull(),
   patientCode: text("patient_code").notNull(),
+  patientName: text("patient_name").notNull().default(""),
   age: integer("age"),
   affiliation: text("affiliation"),
   diagnosis: text("diagnosis").notNull().default(""),

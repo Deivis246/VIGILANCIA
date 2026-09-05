@@ -189,6 +189,8 @@ export const TranscribeVigilanciaCensusBody = zod.object({
 
 export const transcribeVigilanciaCensusResponseRowsItemPatientCodeMax = 20;
 
+export const transcribeVigilanciaCensusResponseRowsItemPatientNameMax = 200;
+
 export const transcribeVigilanciaCensusResponseRowsItemAgeMin = 0;
 export const transcribeVigilanciaCensusResponseRowsItemAgeMultipleOf = 1;
 
@@ -236,6 +238,7 @@ export const TranscribeVigilanciaCensusResponse = zod.object({
   "bedId": zod.string().nullable(),
   "occupied": zod.boolean().nullable(),
   "patientCode": zod.string().max(transcribeVigilanciaCensusResponseRowsItemPatientCodeMax).nullable(),
+  "patientName": zod.string().max(transcribeVigilanciaCensusResponseRowsItemPatientNameMax).nullable(),
   "age": zod.number().min(transcribeVigilanciaCensusResponseRowsItemAgeMin).multipleOf(transcribeVigilanciaCensusResponseRowsItemAgeMultipleOf).nullable(),
   "affiliation": zod.string().max(transcribeVigilanciaCensusResponseRowsItemAffiliationMax).nullable(),
   "diagnosis": zod.string().max(transcribeVigilanciaCensusResponseRowsItemDiagnosisMax).nullable(),
@@ -271,6 +274,8 @@ export const TranscribeVigilanciaCensusResponse = zod.object({
  * @summary List saved bed records
  */
 export const getVigilanciaBedRecordsResponsePatientCodeMax = 20;
+
+export const getVigilanciaBedRecordsResponsePatientNameMax = 200;
 
 export const getVigilanciaBedRecordsResponseAgeMin = 0;
 export const getVigilanciaBedRecordsResponseAgeMultipleOf = 1;
@@ -312,6 +317,7 @@ export const GetVigilanciaBedRecordsResponseItem = zod.object({
   "bedId": zod.string(),
   "occupied": zod.boolean(),
   "patientCode": zod.string().max(getVigilanciaBedRecordsResponsePatientCodeMax),
+  "patientName": zod.string().max(getVigilanciaBedRecordsResponsePatientNameMax),
   "age": zod.number().min(getVigilanciaBedRecordsResponseAgeMin).multipleOf(getVigilanciaBedRecordsResponseAgeMultipleOf).nullable(),
   "affiliation": zod.string().max(getVigilanciaBedRecordsResponseAffiliationMax).nullable(),
   "diagnosis": zod.string().max(getVigilanciaBedRecordsResponseDiagnosisMax),
@@ -341,6 +347,8 @@ export const GetVigilanciaBedRecordsResponse = zod.array(GetVigilanciaBedRecords
  */
 export const applyVigilanciaCensusBodyRowsItemBedIdRegExp = new RegExp('^(20[1-9]|21[0-1]|2[12][0-3])-[abc]$');
 export const applyVigilanciaCensusBodyRowsItemPatientCodeMax = 20;
+
+export const applyVigilanciaCensusBodyRowsItemPatientNameMax = 200;
 
 export const applyVigilanciaCensusBodyRowsItemAgeMin = 0;
 export const applyVigilanciaCensusBodyRowsItemAgeMultipleOf = 1;
@@ -384,6 +392,7 @@ export const ApplyVigilanciaCensusBody = zod.object({
   "bedId": zod.string().regex(applyVigilanciaCensusBodyRowsItemBedIdRegExp),
   "occupied": zod.boolean(),
   "patientCode": zod.string().max(applyVigilanciaCensusBodyRowsItemPatientCodeMax),
+  "patientName": zod.string().max(applyVigilanciaCensusBodyRowsItemPatientNameMax),
   "age": zod.number().min(applyVigilanciaCensusBodyRowsItemAgeMin).multipleOf(applyVigilanciaCensusBodyRowsItemAgeMultipleOf).nullable(),
   "affiliation": zod.string().max(applyVigilanciaCensusBodyRowsItemAffiliationMax).nullable(),
   "diagnosis": zod.string().max(applyVigilanciaCensusBodyRowsItemDiagnosisMax),
@@ -426,6 +435,8 @@ export const UpsertVigilanciaBedRecordParams = zod.object({
 
 export const upsertVigilanciaBedRecordBodyPatientCodeMax = 20;
 
+export const upsertVigilanciaBedRecordBodyPatientNameMax = 200;
+
 export const upsertVigilanciaBedRecordBodyAgeMin = 0;
 export const upsertVigilanciaBedRecordBodyAgeMultipleOf = 1;
 
@@ -465,6 +476,7 @@ export const upsertVigilanciaBedRecordBodyCensusDateRegExp = new RegExp('^\\d{4}
 export const UpsertVigilanciaBedRecordBody = zod.object({
   "occupied": zod.boolean(),
   "patientCode": zod.string().max(upsertVigilanciaBedRecordBodyPatientCodeMax),
+  "patientName": zod.string().max(upsertVigilanciaBedRecordBodyPatientNameMax),
   "age": zod.number().min(upsertVigilanciaBedRecordBodyAgeMin).multipleOf(upsertVigilanciaBedRecordBodyAgeMultipleOf).nullable(),
   "affiliation": zod.string().max(upsertVigilanciaBedRecordBodyAffiliationMax).nullable(),
   "diagnosis": zod.string().max(upsertVigilanciaBedRecordBodyDiagnosisMax),
@@ -486,6 +498,8 @@ export const UpsertVigilanciaBedRecordBody = zod.object({
 })
 
 export const upsertVigilanciaBedRecordResponsePatientCodeMax = 20;
+
+export const upsertVigilanciaBedRecordResponsePatientNameMax = 200;
 
 export const upsertVigilanciaBedRecordResponseAgeMin = 0;
 export const upsertVigilanciaBedRecordResponseAgeMultipleOf = 1;
@@ -527,6 +541,7 @@ export const UpsertVigilanciaBedRecordResponse = zod.object({
   "bedId": zod.string(),
   "occupied": zod.boolean(),
   "patientCode": zod.string().max(upsertVigilanciaBedRecordResponsePatientCodeMax),
+  "patientName": zod.string().max(upsertVigilanciaBedRecordResponsePatientNameMax),
   "age": zod.number().min(upsertVigilanciaBedRecordResponseAgeMin).multipleOf(upsertVigilanciaBedRecordResponseAgeMultipleOf).nullable(),
   "affiliation": zod.string().max(upsertVigilanciaBedRecordResponseAffiliationMax).nullable(),
   "diagnosis": zod.string().max(upsertVigilanciaBedRecordResponseDiagnosisMax),

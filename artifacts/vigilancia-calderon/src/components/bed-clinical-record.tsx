@@ -9,6 +9,7 @@ export type CultureStatus = "pending" | "negative" | "positive";
 export type BedClinicalRecord = {
   occupied: boolean;
   patientCode: string;
+  patientName: string;
   age: number | "";
   affiliation: string;
   diagnosis: string;
@@ -58,6 +59,7 @@ export function mapBedClinicalRecords(records: VigilanciaBedRecord[]): BedClinic
     {
       occupied: record.occupied,
       patientCode: record.patientCode,
+      patientName: record.patientName ?? "",
       age: record.age ?? "",
       affiliation: record.affiliation ?? "",
       diagnosis: record.diagnosis,
@@ -85,6 +87,7 @@ export function toBedRecordInput(record: BedClinicalRecord): VigilanciaBedRecord
   return {
     occupied: record.occupied,
     patientCode: record.patientCode,
+    patientName: record.patientName,
     age: record.age === "" ? null : record.age,
     affiliation: record.affiliation === "" ? null : record.affiliation,
     diagnosis: record.diagnosis,
@@ -110,6 +113,7 @@ export function getBedRecordDefaults(bed: VigilanciaBed): BedClinicalRecord {
   return {
     occupied: bed.patientCode !== "Disponible",
     patientCode: bed.patientCode === "Disponible" ? "" : bed.patientCode,
+    patientName: "",
     age: "",
     affiliation: "",
     diagnosis: "",
@@ -234,6 +238,7 @@ export function BedClinicalRecordDialog({
       ? {
           ...form,
           patientCode: form.patientCode.trim().toUpperCase(),
+          patientName: form.patientName.trim(),
           diagnosis: form.diagnosis.trim(),
           culturePositiveDate: form.cultureStatus === "positive" && form.cultureType !== "none" ? form.culturePositiveDate : "",
           rectalSwabOrganism: form.rectalSwabStatus === "positive" ? form.rectalSwabOrganism.trim() : "",
@@ -244,6 +249,7 @@ export function BedClinicalRecordDialog({
       : {
           occupied: false,
           patientCode: "",
+          patientName: "",
           age: "",
           affiliation: "",
           diagnosis: "",
