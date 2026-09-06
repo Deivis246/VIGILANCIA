@@ -7,7 +7,7 @@ export function isTrustedSameOriginRequest(input: {
   secFetchSite?: string;
 }) {
   if (!input.origin) return false;
-  if (input.secFetchSite && input.secFetchSite !== "same-origin" && input.secFetchSite !== "same-site") {
+  if (input.secFetchSite && !["same-origin", "same-site", "cross-site"].includes(input.secFetchSite)) {
     return false;
   }
   const host = (input.forwardedHost || input.host || "").split(",")[0]?.trim();
