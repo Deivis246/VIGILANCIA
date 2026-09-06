@@ -57,6 +57,12 @@ const INTERVAL_OPTIONS = [
   { label: "Cada 24 horas", ms: 24 * 60 * 60 * 1000 },
 ];
 
+function isValidIsolation(isolation: string | null | undefined): boolean {
+  if (!isolation) return false;
+  const lower = isolation.trim().toLowerCase();
+  return lower !== 'none' && lower !== 'ninguno' && lower !== 'n/a' && lower !== 'na' && lower !== '-' && lower !== 'no' && lower !== 'sin aislamiento' && lower !== 'sin particularidad' && lower !== 'sin particularidades';
+}
+
 function exportCSV(filename: string, rows: Array<Record<string, string | number>>) {
   if (!rows.length) return;
   const keys = Object.keys(rows[0]);
@@ -243,7 +249,7 @@ function Dashboard({ isDark, thresholds }: { isDark: boolean; thresholds: AlertT
   const localMetricValues: Record<string, number> = {
     pacientes: occupiedRecords.length,
     alertas: activeAlerts.length,
-    aislamientos: occupiedRecords.filter((record) => record.isolation !== "none").length,
+    aislamientos: occupiedRecords.filter((record) => isValidIsolation(record.isolation)).length,
     cvc: occupiedRecords.filter((record) => Number(record.centralLineDays) > 0).length,
     sondas: occupiedRecords.filter((record) => Number(record.urinaryCatheterDays) > 0 || Number(record.nasogastricTubeDays) > 0).length,
     culturas: occupiedRecords.filter((record) => record.cultureType !== "none" && record.cultureStatus === "positive").length,
@@ -324,7 +330,7 @@ function BedMap({ beds, loading, records, timestamp, thresholds, onSelectBed }: 
     updated: savedRecords.length,
     automatic: automaticAlerts.length,
     devices: effectiveRecords.filter((record) => Number(record.urinaryCatheterDays) > 0 || Number(record.nasogastricTubeDays) > 0 || Number(record.centralLineDays) > 0).length,
-    isolation: effectiveRecords.filter((record) => !!record.isolation && record.isolation !== 'none').length,
+    isolation: effectiveRecords.filter((record) => isValidIsolation(record.isolation)).length,
     positiveCultures: effectiveRecords.filter((record) => record.cultureStatus === "positive" || record.rectalSwabStatus === "positive").length,
   };
   return <div className="card-print rounded-xl border border-border bg-card p-5"><div className="mb-4 flex items-start justify-between"><div><h2 className="text-sm font-semibold">Mapa de camas</h2><p className="mt-1 text-xs text-muted-foreground">53 camas · Áreas Clínicas · selecciona una cama para ingresar o actualizar datos</p></div><Link data-testid="link-bed-map-alerts" href="/alertas" className="text-xs font-medium text-primary hover:underline">Ver alertas</Link></div><div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-5">{[["Fichas guardadas", localSummary.updated], ["Alertas automáticas", localSummary.automatic], ["Con dispositivos", localSummary.devices], ["Aislamientos", localSummary.isolation], ["Cultivos positivos", localSummary.positiveCultures]].map(([label, value]) => <div key={label} className="rounded-lg border border-border/60 bg-background/35 px-3 py-2"><p className="text-[10px] text-muted-foreground">{label}</p><p className="mt-1 font-mono text-lg font-bold text-primary">{value}</p></div>)}</div>{loading ? <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">{[1, 2, 3, 4, 5, 6].map((i) => <div key={i} className="h-24 animate-pulse rounded-lg bg-muted" />)}</div> : beds.length ? <div className="grid max-h-[680px] grid-cols-1 gap-3 overflow-y-auto pr-1 sm:grid-cols-2 xl:grid-cols-3">{rooms.map(([room, roomBeds]) => <div key={room} className="rounded-lg border border-border/70 bg-background/40 p-2.5"><div className="mb-2 flex items-center justify-between px-1"><span className="font-mono text-[11px] font-bold text-foreground">Sala {room}</span><span className="text-[10px] text-muted-foreground">{roomBeds.length} camas</span></div><div className="grid grid-cols-2 gap-2">{roomBeds.map((bed) => <BedCell key={bed.id} bed={bed} record={records[bed.id]} automaticAlerts={getAutomaticAlertsForBed(bed, records[bed.id], timestamp, thresholds)} onSelect={() => onSelectBed(bed)} />)}</div></div>)}</div> : <EmptyState title="Mapa sin registros" copy="No hay camas reportadas para esta vista." />}</div>;
@@ -333,7 +339,8 @@ function BedCell({ bed, record, automaticAlerts, onSelect }: { bed: VigilanciaBe
   const patientCode = record ? (record.occupied ? record.patientCode || "Sin código" : "Disponible") : bed.patientCode;
   const available = patientCode === "Disponible";
   const stayDays = record?.stayDays ?? bed.days;
-  const isolation = record?.isolation ?? (bed.isolation === 'none' ? '' : bed.isolation);
+  const isolationValue = record?.isolation ?? (bed.isolation === 'none' ? '' : bed.isolation);
+  const isolation = isValidIsolation(isolationValue) ? isolationValue : "";
   const swabStatus = record?.rectalSwabStatus ?? bed.rectalSwabStatus ?? "pending";
   const cultureType = record?.cultureType ?? bed.cultureType ?? "none";
   const cultureStatus = record?.cultureStatus ?? bed.cultureStatus ?? "pending";

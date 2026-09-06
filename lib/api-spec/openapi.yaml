@@ -338,7 +338,7 @@ components:
           maximum: 100
         summary:
           type: string
-          maxLength: 600
+          maxLength: 5000
         coverage:
           type: object
           properties:
@@ -376,7 +376,7 @@ components:
                 type: number
               detail:
                 type: string
-                maxLength: 300
+                maxLength: 2000
             required: [room, signal, positiveResults, occupiedBeds, detail]
         factors:
           type: array
@@ -389,29 +389,29 @@ components:
                 enum: [elevates, protects, context]
               title:
                 type: string
-                maxLength: 140
+                maxLength: 1000
               detail:
                 type: string
-                maxLength: 300
+                maxLength: 2000
             required: [kind, title, detail]
         missingData:
           type: array
           maxItems: 8
           items:
             type: string
-            maxLength: 240
+            maxLength: 1000
         recommendations:
           type: array
           maxItems: 8
           items:
             type: string
-            maxLength: 300
+            maxLength: 2000
         limitations:
           type: array
           maxItems: 5
           items:
             type: string
-            maxLength: 300
+            maxLength: 2000
         reviewRequired:
           type: boolean
           enum: [true]
@@ -751,7 +751,7 @@ components:
           type: array
           items:
             type: string
-            maxLength: 240
+            maxLength: 1000
       required: [bedId, occupied, patientCode, patientName, age, affiliation, diagnosis, stayDays, urinaryCatheterDays, nasogastricTubeDays, culturePositiveDate, centralLineDays, drainDays, dialysisCatheterDays, cultureType, cultureStatus, cultureOrganism, isolation, rectalSwabStatus, rectalSwabOrganism, rectalSwabPositiveDate, censusDate, confidence, warnings]
     VigilanciaTranscriptionResponse:
       type: object
@@ -765,7 +765,7 @@ components:
           type: array
           items:
             type: string
-            maxLength: 240
+            maxLength: 1000
         reviewedRequired:
           type: boolean
           enum: [true]
