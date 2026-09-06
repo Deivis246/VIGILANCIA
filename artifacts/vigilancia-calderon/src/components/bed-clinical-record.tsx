@@ -130,7 +130,7 @@ export function getBedRecordDefaults(bed: VigilanciaBed): BedClinicalRecord {
     rectalSwabStatus: bed.rectalSwabStatus ?? "pending",
     rectalSwabOrganism: bed.rectalSwabOrganism ?? "",
     rectalSwabPositiveDate: "",
-    isolation: bed.isolation ?? "none",
+    isolation: bed.isolation === "none" ? "" : (bed.isolation ?? ""),
     censusDate: "",
     updatedAt: "",
   };
