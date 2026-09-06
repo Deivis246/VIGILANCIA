@@ -360,11 +360,11 @@ function parseLocalOcrCensus(text: string) {
   let tableHeaders: string[] = [];
   const enrichedText = text.split(/\r?\n/).map((line) => {
     const trimmed = line.trim();
-    if (/\bCAMA\b/i.test(trimmed) && !/(?:20[1-9]|21[0-1]|2[12][0-3])\s*[-–—]?\s*[abc]/i.test(trimmed)) {
+    if (/\bCAMA\b/i.test(trimmed) && !/(?:20[1-9]|21[0-1]|21[0-9]|22[0-3])\s*[-–—]?\s*[abc]/i.test(trimmed)) {
       tableHeaders = trimmed.split(/\s{2,}/).map((header) => header.trim());
       return line;
     }
-    if (tableHeaders.length > 1 && /(?:20[1-9]|21[0-1]|2[12][0-3])\s*[-–—]?\s*[abc]/i.test(trimmed)) {
+    if (tableHeaders.length > 1 && /(?:20[1-9]|21[0-1]|21[0-9]|22[0-3])\s*[-–—]?\s*[abc]/i.test(trimmed)) {
       const cells = trimmed.split(/\s{2,}/).map((cell) => cell.trim());
       if (cells.length > 1) {
         return cells.map((cell, index) => `${tableHeaders[index] ?? `Campo ${index + 1}`}: ${cell}`).join("\n");

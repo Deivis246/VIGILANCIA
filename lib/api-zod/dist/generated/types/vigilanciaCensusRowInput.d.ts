@@ -9,7 +9,7 @@ import type { VigilanciaCensusRowInputCultureStatus } from './vigilanciaCensusRo
 import type { VigilanciaCensusRowInputCultureType } from './vigilanciaCensusRowInputCultureType';
 import type { VigilanciaCensusRowInputRectalSwabStatus } from './vigilanciaCensusRowInputRectalSwabStatus';
 export interface VigilanciaCensusRowInput {
-    /** @pattern ^(20[1-9]|21[0-1]|2[12][0-3])-[abc]$ */
+    /** @pattern ^(20[1-9]|21[0-1]|21[0-9]|22[0-3])-[abc]$ */
     bedId: string;
     occupied: boolean;
     /** @maxLength 20 */

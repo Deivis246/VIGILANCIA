@@ -345,7 +345,7 @@ export const GetVigilanciaBedRecordsResponse = zod.array(GetVigilanciaBedRecords
  * Validates every selected bed before applying all record updates and releases in one database transaction.
  * @summary Apply reviewed census rows atomically
  */
-export const applyVigilanciaCensusBodyRowsItemBedIdRegExp = new RegExp('^(20[1-9]|21[0-1]|2[12][0-3])-[abc]$');
+export const applyVigilanciaCensusBodyRowsItemBedIdRegExp = new RegExp('^(20[1-9]|21[0-1]|21[0-9]|22[0-3])-[abc]$');
 export const applyVigilanciaCensusBodyRowsItemPatientCodeMax = 20;
 
 export const applyVigilanciaCensusBodyRowsItemPatientNameMax = 200;
@@ -426,7 +426,7 @@ export const ApplyVigilanciaCensusResponse = zod.object({
 /**
  * @summary Save an operational bed record
  */
-export const upsertVigilanciaBedRecordPathBedIdRegExp = new RegExp('^(20[1-9]|21[0-1]|2[12][0-3])-[abc]$');
+export const upsertVigilanciaBedRecordPathBedIdRegExp = new RegExp('^(20[1-9]|21[0-1]|21[0-9]|22[0-3])-[abc]$');
 
 
 export const UpsertVigilanciaBedRecordParams = zod.object({
@@ -567,7 +567,7 @@ export const UpsertVigilanciaBedRecordResponse = zod.object({
 /**
  * @summary Release a bed and remove its saved record
  */
-export const deleteVigilanciaBedRecordPathBedIdRegExp = new RegExp('^(20[1-9]|21[0-1]|2[12][0-3])-[abc]$');
+export const deleteVigilanciaBedRecordPathBedIdRegExp = new RegExp('^(20[1-9]|21[0-1]|21[0-9]|22[0-3])-[abc]$');
 
 
 export const DeleteVigilanciaBedRecordParams = zod.object({

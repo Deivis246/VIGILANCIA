@@ -147,7 +147,7 @@ paths:
           required: true
           schema:
             type: string
-            pattern: "^(20[1-9]|21[0-1]|2[12][0-3])-[abc]$"
+            pattern: "^(20[1-9]|21[0-1]|21[0-9]|22[0-3])-[abc]$"
       requestBody:
         required: true
         content:
@@ -173,7 +173,7 @@ paths:
           required: true
           schema:
             type: string
-            pattern: "^(20[1-9]|21[0-1]|2[12][0-3])-[abc]$"
+            pattern: "^(20[1-9]|21[0-1]|21[0-9]|22[0-3])-[abc]$"
       responses:
         "204":
           description: Record deleted
@@ -571,7 +571,7 @@ components:
       properties:
         bedId:
           type: string
-          pattern: "^(20[1-9]|21[0-1]|2[12][0-3])-[abc]$"
+          pattern: "^(20[1-9]|21[0-1]|21[0-9]|22[0-3])-[abc]$"
         occupied:
           type: boolean
         patientCode:
