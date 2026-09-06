@@ -60,6 +60,10 @@ function numberValue(value: number | null | undefined) {
 }
 
 function makeEditableRow(row: VigilanciaTranscriptionRow): EditableRow {
+  const rawBedId = (row.bedId ?? "").trim().toLowerCase();
+  const bedIdMatch = rawBedId.match(/(2[0-9]{2})\s*[-_]?\s*([a-c])/);
+  const bedId = bedIdMatch ? `${bedIdMatch[1]}-${bedIdMatch[2]}` : rawBedId;
+
   return {
     selected: Boolean(
       row.bedId
@@ -70,7 +74,7 @@ function makeEditableRow(row: VigilanciaTranscriptionRow): EditableRow {
       || row.nasogastricTubeDays != null
       || row.centralLineDays != null,
     ),
-    bedId: row.bedId ?? "",
+    bedId,
     occupied: row.occupied == null ? "unknown" : row.occupied ? "occupied" : "available",
     patientCode: row.patientCode ?? "",
     patientName: row.patientName ?? "",
