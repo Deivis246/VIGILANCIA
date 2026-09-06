@@ -12,6 +12,8 @@ import {
 } from "@workspace/api-client-react";
 import { AlertTriangle, Camera, Check, FileText, ImageUp, LoaderCircle, RotateCcw, ShieldCheck, Trash2 } from "lucide-react";
 import { ErrorBoundary, type ErrorFallbackProps } from "@/components/error-boundary";
+import { useLocation } from "wouter";
+import { useToast } from "@/hooks/use-toast";
 
 const MAX_IMAGE_BYTES = 6 * 1024 * 1024;
 const MAX_PDF_BYTES = 20 * 1024 * 1024;
@@ -157,6 +159,8 @@ async function fileToBase64(file: File) {
 
 function CensusTranscriptionInner() {
   const queryClient = useQueryClient();
+  const [_, setLocation] = useLocation();
+  const { toast } = useToast();
   const transcription = useTranscribeVigilanciaCensus();
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState("");
@@ -297,7 +301,11 @@ function CensusTranscriptionInner() {
         queryClient.invalidateQueries({ queryKey: getGetVigilanciaAlertsQueryKey() }),
       ]);
       reset();
-      setAppliedCount(result.appliedCount);
+      toast({
+        title: "Datos guardados correctamente",
+        description: `Se han actualizado ${result.appliedCount} camas en el registro clínico.`,
+      });
+      setLocation("/registro");
     } catch {
       await Promise.allSettled([
         queryClient.invalidateQueries({ queryKey: getGetVigilanciaBedRecordsQueryKey() }),
