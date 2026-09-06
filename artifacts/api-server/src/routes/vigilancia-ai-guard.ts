@@ -14,7 +14,7 @@ export function isTrustedSameOriginRequest(input: {
   const protocol = (input.forwardedProto || input.protocol).split(",")[0]?.trim();
   if (!host || !protocol) return false;
   try {
-    return new URL(input.origin).origin === `${protocol}://${host}`;
+    return new URL(input.origin).host === host;
   } catch {
     return false;
   }
