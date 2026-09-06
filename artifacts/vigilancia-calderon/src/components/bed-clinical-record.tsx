@@ -275,7 +275,40 @@ export function BedClinicalRecordDialog({
       await onSave(saved);
     } catch {
       setError("No se pudo guardar la ficha en el servidor. Inténtalo nuevamente.");
-    } finally {
+      setSaving(false);
+    }
+  };
+
+  const clearBed = async () => {
+    if (!window.confirm("¿Estás seguro que deseas quitar al paciente, borrar toda la ficha y desocupar esta cama?")) return;
+    setSaving(true);
+    try {
+      await onSave({
+        occupied: false,
+        patientCode: "",
+        patientName: "",
+        age: "",
+        affiliation: "",
+        diagnosis: "",
+        stayDays: "",
+        urinaryCatheterDays: "",
+        nasogastricTubeDays: "",
+        centralLineDays: "",
+        drainDays: "",
+        dialysisCatheterDays: "",
+        cultureType: "none",
+        cultureStatus: "pending",
+        cultureOrganism: "",
+        culturePositiveDate: "",
+        rectalSwabStatus: "pending",
+        rectalSwabOrganism: "",
+        rectalSwabPositiveDate: "",
+        isolation: "",
+        censusDate: "",
+        updatedAt: new Date().toISOString(),
+      });
+    } catch {
+      setError("No se pudo desocupar la cama en el servidor. Inténtalo nuevamente.");
       setSaving(false);
     }
   };
@@ -428,6 +461,9 @@ export function BedClinicalRecordDialog({
         <footer className="sticky bottom-0 flex items-center justify-between gap-3 border-t border-border bg-card/95 px-5 py-4 backdrop-blur sm:px-6">
           <span className="hidden text-[11px] text-muted-foreground sm:block">Los valores deben ser números enteros iguales o mayores que cero.</span>
           <div className="ml-auto flex gap-2">
+            {initialRecord && initialRecord.occupied && (
+              <button type="button" onClick={clearBed} disabled={saving} className="rounded-lg border border-destructive/40 px-4 py-2.5 text-xs font-medium text-destructive hover:bg-destructive/10 disabled:opacity-60 transition-colors">Liberar cama</button>
+            )}
             <button data-testid="button-cancel-bed-record" type="button" onClick={onClose} className="rounded-lg border border-border px-4 py-2.5 text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground">Cancelar</button>
             <button data-testid="button-save-bed-record" type="submit" disabled={saving} className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground shadow-lg shadow-primary/20 hover:-translate-y-0.5 disabled:cursor-wait disabled:opacity-60"><Check size={15} />{saving ? "Guardando…" : "Guardar ficha"}</button>
           </div>
